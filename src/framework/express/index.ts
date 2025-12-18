@@ -1,4 +1,5 @@
 import express, { Response, Request, json } from 'express'
+import morgan from 'morgan'
 import { routeBase } from '../../config/route/route'
 import { routeAuth } from '../../factures/user/route/auth/auth'
 import { routeUser } from '../../factures/user/route/user/user'
@@ -9,6 +10,8 @@ const PORT = 3000
 
 app.use(json())
 
+app.use(morgan('dev'))
+
 app.use(routeBase, routeAuth('/auth'))
 app.use(routeBase, routeUser('/user'))
 
@@ -17,5 +20,5 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}`)
+  console.log(`esta encendido el server en el puerto http://localhost:${PORT}`)
 })
