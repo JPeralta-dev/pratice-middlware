@@ -13,7 +13,7 @@ export class AuthController {
     const body = req.body
 
     const result = this.serviceAuth.login(body)
-
+    
     if (!result.success) {
       const error = {
         status: result.statuCode,
