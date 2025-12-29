@@ -21,13 +21,22 @@ export class ServiceAuthLogin {
     this.classUtilsFiles = new RepositoryUser(this.path);
   }
 
-  login(dto: string): IFailureProcess<any> | ISuccessProcess<any> {
+  login({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
-      const result = this.classUtilsFiles.findById(dto);
-      console.log(result);
+      const result = this.classUtilsFiles.findById(email);
+
+      if (password !== result.password)
+        return FailureProcess("algo ta malo", 404);
+
       if (!result) return FailureProcess("no se ha encontrado el usuario", 500);
 
-      return SuccessProcess(`El usuario autenticado es ${dto}`, 200);
+      return SuccessProcess(`El usuario autenticado es ${email}`, 200);
     } catch (error) {
       return FailureProcess("", 500);
     }
