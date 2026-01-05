@@ -1,20 +1,29 @@
-import { config } from 'dotenv'
-import Jwt from 'jsonwebtoken'
+import { config } from "dotenv";
+import Jwt from "jsonwebtoken";
 
-config()
+config();
 
 export class MiddlwareJwt {
-  private readonly secreyKey!: string | any
+  private static instance: MiddlwareJwt;
+  private readonly secreyKey!: string | any;
 
-  constructor () {
-    this.secreyKey = process.env.SECRET_KEY
+  private constructor() {
+    this.secreyKey = process.env.SECRET_KEY;
   }
 
-  createToken (dto: any): string {
-    return Jwt.sign(dto, this.secreyKey, { algorithm: 'HS256', expiresIn: '1m' })
+  createToken(dto: any): string {
+    return Jwt.sign(dto, this.secreyKey, {
+      algorithm: "HS256",
+      expiresIn: "30m",
+    });
   }
 
-  verifyToken (): void {
+  verifyToken(): void {}
 
+  public static getIntance(): MiddlwareJwt {
+    if (!this.instance) {
+      return (this.instance = new MiddlwareJwt());
+    }
+    return this.instance;
   }
 }

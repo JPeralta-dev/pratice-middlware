@@ -12,10 +12,11 @@ import { ICrudReposity } from "../../../../interfaces/Repository/repository";
 import path from "path";
 import { RepositoryUser } from "../../repository/user";
 import { User } from "../../interface/user";
+import { jwtObject } from "../../../../framework/express";
 
 export class ServiceAuthLogin {
   private readonly path: string;
-  private readonly classUtilsFiles: ICrudReposity<User>; /* QUE TIPS MEJOR ES CON EL CONTRARO QUE TIENE ESE REPO */
+  private readonly classUtilsFiles: ICrudReposity<User>;
   constructor() {
     this.path = path.join(process.cwd(), pathData.USERS, "/user.json");
     this.classUtilsFiles = new RepositoryUser(this.path);
@@ -35,8 +36,8 @@ export class ServiceAuthLogin {
         return FailureProcess("algo ta malo", 404);
 
       if (!result) return FailureProcess("no se ha encontrado el usuario", 500);
-
-      return SuccessProcess(`El usuario autenticado es ${email}`, 200);
+      const tokenExpire = jwtObject.createToken({ email, password });
+      return SuccessProcess(`Usuario autenticado ${tokenExpire}`, 200);
     } catch (error) {
       return FailureProcess("", 500);
     }
