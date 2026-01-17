@@ -8,9 +8,11 @@ import {
   FailureProcess,
   SuccessProcess,
 } from "../../../../utils/result/result";
-import { User } from "../../interface/user";
+
 import { RepositoryUser } from "../../repository/user";
 import path from "path";
+import bcryptjs from "bcryptjs";
+import { User } from "../../entity/User";
 
 export class ServiceAuthRegister {
   private readonly path: string;
@@ -28,7 +30,13 @@ export class ServiceAuthRegister {
     password: string;
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
-      return SuccessProcess("", 200);
+      const saltScript = bcryptjs.genSaltSync(10);
+      const newPassword = bcryptjs.hashSync(password, saltScript);
+
+      const user = new User(email, newPassword);
+      this.classUtilsFiles.save(user);
+
+      return SuccessProcess("User saved succesfully", 200);
     } catch (error) {
       return FailureProcess("", 500);
     }

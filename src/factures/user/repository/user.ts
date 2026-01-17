@@ -1,6 +1,6 @@
 import { ICrudReposity } from "../../../interfaces/Repository/repository";
 import { fileUtils } from "../../../utils/file/file";
-import { User } from "../interface/user";
+import { User } from "../entity/User";
 
 export class RepositoryUser extends fileUtils implements ICrudReposity<User> {
   private readonly utilsFiles: fileUtils;
@@ -9,14 +9,15 @@ export class RepositoryUser extends fileUtils implements ICrudReposity<User> {
     this.utilsFiles = new fileUtils(this.pathTheFile);
   }
 
-  save(data: User): void {}
-
-  delete(id: string): User {
-    return { username: "", password: "" };
+  save(data: User): void {
+    this.utilsFiles.writeFile(data);
   }
 
+  delete(id: string): User {
+    return new User("", "");
+  }
   update(data: User): User {
-    return { username: "", password: "" };
+    return new User("", "");
   }
 
   findById(id: string): User {
@@ -24,10 +25,14 @@ export class RepositoryUser extends fileUtils implements ICrudReposity<User> {
     const result = vector.find((value) => value.username === id);
     console.log(result);
 
-    return result as User;
+    if (!result) {
+      return new User("", "");
+    }
+
+    return new User(result.username, result.password);
   }
 
   find(): [User] {
-    return [{ username: "", password: "" }];
+    return [new User("", "")];
   }
 }

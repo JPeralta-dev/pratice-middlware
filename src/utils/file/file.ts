@@ -21,8 +21,9 @@ export class fileUtils {
     try {
       fs.writeFileSync(
         this.pathTheFile,
-        /* revisar que esto no embarrre el proceso */ JSON.stringify(object)
+        /* revisar que esto no embarrre el proceso */ JSON.stringify(object),
       );
+      console.log("mira aqui llego veamos si funciono");
     } catch (error) {
       return [error];
     }

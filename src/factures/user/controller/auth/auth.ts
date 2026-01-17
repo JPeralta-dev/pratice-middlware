@@ -1,27 +1,42 @@
-import { NextFunction, Request, Response } from 'express'
-import { ServiceAuthLogin } from '../../service/auth/login'
+import { NextFunction, Request, Response } from "express";
+import { ServiceAuthLogin } from "../../service/auth/login";
 
 export class AuthController {
-  private readonly serviceAuth: ServiceAuthLogin
-  constructor (service: ServiceAuthLogin) {
-    this.serviceAuth = service
+  constructor(private readonly serviceAuth: ServiceAuthLogin) {
+    this.serviceAuth;
 
-    this.login = this.login.bind(this)
+    this.login = this.login.bind(this);
   }
 
-  login (req: Request, res: Response, next: NextFunction): void {
-    const body = req.body
+  login(req: Request, res: Response, next: NextFunction): void {
+    const body = req.body;
 
-    const result = this.serviceAuth.login(body)
-    
+    const result = this.serviceAuth.login(body);
+
     if (!result.success) {
       const error = {
         status: result.statuCode,
-        message: result.error
-      }
-      return next(error)
+        message: result.error,
+      };
+      return next(error);
     }
 
-    res.status(result.statuCode).json({ message: result.value })
+    res.status(result.statuCode).json({ message: result.value });
+  }
+
+  register(req: Request, res: Response, next: NextFunction): void {
+    const body = req.body;
+
+    const result = this.serviceAuth.register(body);
+
+    if (!result.success) {
+      const error = {
+        status: result.statuCode,
+        message: result.error,
+      };
+      return next(error);
+    }
+
+    res.status(result.statuCode).json({ message: result.value });
   }
 }

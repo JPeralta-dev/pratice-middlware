@@ -1,3 +1,4 @@
+import bcryptjs from "bcryptjs";
 import { pathData } from "../../../../config/route/route";
 import {
   IFailureProcess,
@@ -11,8 +12,9 @@ import { ICrudReposity } from "../../../../interfaces/Repository/repository";
 
 import path from "path";
 import { RepositoryUser } from "../../repository/user";
-import { User } from "../../interface/user";
+
 import { jwtObject } from "../../../../framework/express";
+import { User } from "../../entity/User";
 
 export class ServiceAuthLogin {
   private readonly path: string;
@@ -32,14 +34,23 @@ export class ServiceAuthLogin {
     try {
       const result = this.classUtilsFiles.findById(email);
 
-      if (password !== result.password)
-        return FailureProcess("algo ta malo", 404);
+      const comparePassword = bcryptjs.compareSync(
+        password,
+        result.getPassword(),
+      );
+      if (!comparePassword) {
+        return FailureProcess(
+          "Password or username incorrecto, please try again",
+          403,
+        );
+      }
 
       if (!result) return FailureProcess("no se ha encontrado el usuario", 500);
       const tokenExpire = jwtObject.createToken({ email, password });
+
       return SuccessProcess(`Usuario autenticado ${tokenExpire}`, 200);
     } catch (error) {
-      return FailureProcess("", 500);
+      return FailureProcess("Error internal server", 500);
     }
   }
 }
