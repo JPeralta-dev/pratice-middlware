@@ -22,10 +22,12 @@ export class RepositoryUser extends fileUtils implements ICrudReposity<User> {
 
   findById(id: string): User {
     const vector = this.utilsFiles.readFile();
+
     const result = vector.find((value) => value.username === id);
-    console.log(result);
 
     if (!result) {
+      console.log("estoy aca");
+
       return new User("", "");
     }
 

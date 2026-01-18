@@ -32,6 +32,9 @@ export class ServiceAuthLogin {
     password: string;
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
+      console.log("llegue al prunciop del servicio linea 35");
+      console.log(this.classUtilsFiles.findById(email));
+
       const result = this.classUtilsFiles.findById(email);
 
       const comparePassword = bcryptjs.compareSync(
@@ -50,7 +53,7 @@ export class ServiceAuthLogin {
 
       return SuccessProcess(`Usuario autenticado ${tokenExpire}`, 200);
     } catch (error) {
-      return FailureProcess("Error internal server", 500);
+      return FailureProcess("Error internal server" + error, 500);
     }
   }
 }

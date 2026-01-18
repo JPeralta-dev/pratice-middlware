@@ -18,11 +18,11 @@ export class fileUtils {
   }
 
   writeFile(object: any): any {
+    /** fix: debe agregar como vectori y no como un json normal */
     try {
-      fs.writeFileSync(
-        this.pathTheFile,
-        /* revisar que esto no embarrre el proceso */ JSON.stringify(object),
-      );
+      const vector = this.readFile();
+      vector.push(object);
+      fs.writeFileSync(this.pathTheFile, JSON.stringify(vector));
       console.log("mira aqui llego veamos si funciono");
     } catch (error) {
       return [error];
