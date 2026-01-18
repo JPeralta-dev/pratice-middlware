@@ -30,6 +30,10 @@ export class ServiceAuthRegister {
     password: string;
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
+      const resultFind = this.classUtilsFiles.findById(email);
+
+      if (resultFind) return FailureProcess("user exist", 404);
+
       const saltScript = bcryptjs.genSaltSync(10);
       const newPassword = bcryptjs.hashSync(password, saltScript);
 

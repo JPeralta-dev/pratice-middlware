@@ -21,11 +21,8 @@ export class AuthController {
     const result = this.serviceAuth.login(body);
 
     if (!result.success) {
-      const error = {
-        status: result.statuCode,
-        message: result.error,
-      };
-      return next(error);
+      res.status(result.statuCode).json({ error: result.error });
+      return;
     }
 
     res.status(result.statuCode).json({ message: result.value });
@@ -37,11 +34,8 @@ export class AuthController {
     const result = this.serviceRegister.register(body);
 
     if (!result.success) {
-      const error = {
-        status: result.statuCode,
-        message: result.error,
-      };
-      return next(error);
+      res.status(result.statuCode).json({ error: result.error });
+      return;
     }
 
     res.status(result.statuCode).json({ message: result.value });
