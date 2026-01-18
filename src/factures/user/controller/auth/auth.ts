@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { ServiceAuthLogin } from "../../service/auth/login";
+import { ServiceAuthRegister } from "../../service/auth/register";
 
 export class AuthController {
-  constructor(private readonly serviceAuth: ServiceAuthLogin) {
+  constructor(
+    private readonly serviceAuth: ServiceAuthLogin,
+    private readonly serviceRegister: ServiceAuthRegister,
+  ) {
     this.serviceAuth;
+    this.serviceRegister;
 
     this.login = this.login.bind(this);
+    this.register = this.register.bind(this);
   }
 
   login(req: Request, res: Response, next: NextFunction): void {
@@ -27,7 +33,7 @@ export class AuthController {
   register(req: Request, res: Response, next: NextFunction): void {
     const body = req.body;
 
-    const result = this.serviceAuth.register(body);
+    const result = this.serviceRegister.register(body);
 
     if (!result.success) {
       const error = {
