@@ -13,7 +13,7 @@ export const routeTaks = (prefix: string) => {
 
   route.delete("/", () => {});
 
-  route.get("/:id", () => {});
+  route.get(`${prefix}/:id`, controller.findByCreated);
 
   return route;
 };

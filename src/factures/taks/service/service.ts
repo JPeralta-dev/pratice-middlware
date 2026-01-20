@@ -11,7 +11,7 @@ import { Taks } from "../entity/taks";
 import { log } from "console";
 export class ServiceTaks {
   private readonly paths: string;
-  private readonly classUtilsFiles: ICrudReposity<any>;
+  private readonly classUtilsFiles: repositoryTaks;
   constructor() {
     this.paths = path.join(process.cwd(), pathData.TACKS, "/taks.json");
     this.classUtilsFiles = new repositoryTaks(this.paths);
@@ -28,9 +28,12 @@ export class ServiceTaks {
       return FailureProcess("", 500);
     }
   }
-  findByCreated(): IFailureProcess<any> | ISuccessProcess<any> {
+  findByCreated(id: string): IFailureProcess<any> | ISuccessProcess<any> {
     try {
-      return SuccessProcess("", 200);
+      const resultOfFind = this.classUtilsFiles.findByCreated(id);
+      if (!resultOfFind) return FailureProcess("No tienes tareas aun", 404);
+
+      return SuccessProcess(resultOfFind, 200);
     } catch (error) {
       return FailureProcess("", 500);
     }
