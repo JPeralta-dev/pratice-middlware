@@ -12,28 +12,35 @@ export class repositoryTaks extends fileUtils implements ICrudReposity<Taks> {
     this.utilsFiles.writeFile(data);
   }
 
-  delete(id: string): Taks {
-    return new Taks("", "", "", true, 1, 1, "2");
+  delete(id: string): any {
+    return undefined;
   }
-  update(data: Taks): Taks {
-    return new Taks("", "", "", true, 1, 1, "2");
+  update(data: Taks): any {
+    return undefined;
   }
 
-  findById(id: string): Taks {
+  findById(id: string): any {
     const vector = this.utilsFiles.readFile();
 
-    const result = vector.find((value) => value.username === id);
+    const result = vector.find((value) => value.id === id);
 
     if (!result) {
-      console.log("estoy aca");
-
-      return new Taks("", "", "", true, 1, 1, "2");
+      return undefined;
     }
 
-    return new Taks("", "", "", true, 1, 1, "2");
+    return result;
   }
 
-  find(): [Taks] {
-    return [new Taks("", "", "", true, 1, 1, "2")];
+  find(): any {
+    const vector = this.utilsFiles.readFile();
+    return vector;
+  }
+
+  findByCreated(id: string): any {
+    const vector = this.utilsFiles.readFile();
+
+    const result = vector.filter((value) => value.createdBy === id);
+
+    return result;
   }
 }

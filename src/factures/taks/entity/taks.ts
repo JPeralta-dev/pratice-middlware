@@ -4,7 +4,7 @@ export class Taks {
     private description: string,
     private dueDate: string,
     private status: boolean,
-    private createdBy: number,
+    private createdBy: string,
     private assignedTo: number,
     private id: string,
   ) {}
@@ -26,7 +26,7 @@ export class Taks {
     return this.status;
   }
 
-  getCreatedBy(): number {
+  getCreatedBy(): string {
     return this.createdBy;
   }
 
@@ -55,7 +55,7 @@ export class Taks {
     this.status = status;
   }
 
-  setCreatedBy(createdBy: number): void {
+  setCreatedBy(createdBy: string): void {
     this.createdBy = createdBy;
   }
 

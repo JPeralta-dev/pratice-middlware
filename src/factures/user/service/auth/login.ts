@@ -32,9 +32,6 @@ export class ServiceAuthLogin {
     password: string;
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
-      console.log("llegue al prunciop del servicio linea 35");
-      console.log(this.classUtilsFiles.findById(email));
-
       const result = this.classUtilsFiles.findById(email);
 
       const comparePassword = bcryptjs.compareSync(

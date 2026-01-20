@@ -4,6 +4,7 @@ import { routeBase } from "../../config/route/route";
 import { routeAuth } from "../../factures/user/route/auth/auth";
 import { routeUser } from "../../factures/user/route/user/user";
 import { MiddlwareJwt } from "../../middlwares/jwt/jwt";
+import { routeTaks } from "../../factures/taks/route/route";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(morgan("dev"));
 
 app.use(routeBase, routeAuth("/auth"));
 app.use(routeBase, routeUser("/user"));
+app.use(routeBase, routeTaks("/taks"));
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Server builder ... ✔");

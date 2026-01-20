@@ -6,7 +6,7 @@ export class fileUtils {
     this.pathTheFile = pathTheFile;
   }
 
-  readFile(): User[] {
+  readFile(): any[] {
     try {
       const fileReaded = fs.readFileSync(this.pathTheFile);
       const resultToString = fileReaded.toString();
