@@ -1,5 +1,4 @@
 import { pathData } from "../../../config/route/route";
-import { ICrudReposity } from "../../../interfaces/Repository/repository";
 import path from "path";
 import { repositoryTaks } from "../repository/taks";
 import {
@@ -7,8 +6,6 @@ import {
   ISuccessProcess,
 } from "../../../interfaces/resutl/result";
 import { FailureProcess, SuccessProcess } from "../../../utils/result/result";
-import { Taks } from "../entity/taks";
-import { log } from "console";
 export class ServiceTaks {
   private readonly paths: string;
   private readonly classUtilsFiles: repositoryTaks;
