@@ -10,6 +10,7 @@ export class MiddlwareJwt {
 
   private constructor() {
     this.secreyKey = process.env.SECRET_KEY;
+    this.verifyToken = this.verifyToken.bind(this);
   }
 
   createToken(dto: any): string {
@@ -34,7 +35,10 @@ export class MiddlwareJwt {
       return;
     }
 
-    console.log(token);
+    const tokenValidation = Jwt.verify(token.split(" ")[1], this.secreyKey);
+    console.log(token.split(" ")[1]);
+    console.log(tokenValidation);
+
     next();
   }
 

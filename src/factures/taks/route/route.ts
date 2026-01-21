@@ -1,4 +1,5 @@
 import { route } from "../../../config/route/route";
+import { jwtObject } from "../../../framework/express";
 import { ControllerTaks } from "../controller/controller";
 import { repositoryTaks } from "../repository/taks";
 import { ServiceTaks } from "../service/service";
@@ -13,7 +14,7 @@ export const routeTaks = (prefix: string) => {
 
   route.delete("/", () => {});
 
-  route.get(`${prefix}/:id`, controller.findByCreated);
+  route.get(`${prefix}/:id`, jwtObject.verifyToken, controller.findByCreated);
 
   return route;
 };

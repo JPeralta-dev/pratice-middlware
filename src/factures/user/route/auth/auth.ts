@@ -10,11 +10,7 @@ export const routeAuth = (prefix: string): Router => {
   const serviceRegister = new ServiceAuthRegister();
   const controllerAuthLogin = new AuthController(service, serviceRegister);
 
-  route.post(
-    `${prefix}/login`,
-    jwtObject.verifyToken,
-    controllerAuthLogin.login,
-  );
+  route.post(`${prefix}/login`, controllerAuthLogin.login);
 
   route.post(`${prefix}/register`, controllerAuthLogin.register);
 
