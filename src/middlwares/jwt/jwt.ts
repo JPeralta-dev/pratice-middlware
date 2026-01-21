@@ -35,6 +35,18 @@ export class MiddlwareJwt {
       return;
     }
 
+    if (token.split(" ")[0] === "Bearer") {
+      res.status(409).json({
+        error: {
+          code: "TOKEN_INVALID",
+          message: "Authentication token correct is required",
+          detail: null,
+        },
+        timestamp: Date().toString(),
+      });
+      return;
+    }
+
     const tokenValidation = Jwt.verify(token.split(" ")[1], this.secreyKey);
     console.log(token.split(" ")[1]);
     console.log(tokenValidation);
