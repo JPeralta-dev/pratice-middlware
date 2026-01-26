@@ -10,7 +10,7 @@ export const routeTaks = (prefix: string) => {
 
   route.get("/", () => {});
 
-  route.post(`${prefix}/`, controller.save);
+  route.post(`${prefix}/`, jwtObject.verifyToken, controller.save);
 
   route.delete("/", () => {});
 

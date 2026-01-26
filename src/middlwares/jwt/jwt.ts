@@ -4,6 +4,20 @@ import Jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
 config();
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        sub: string;
+        username: string;
+        type: string;
+        iat: number;
+        exp: number;
+      };
+    }
+  }
+}
+
 export class MiddlwareJwt {
   private static instance: MiddlwareJwt;
   private readonly secreyKey!: string | any;
