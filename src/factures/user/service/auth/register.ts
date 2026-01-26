@@ -41,7 +41,18 @@ export class ServiceAuthRegister {
       const user = new User(email, newPassword);
       this.classUtilsFiles.save(user);
 
-      return SuccessProcess("User saved succesfully", 200);
+      return SuccessProcess(
+        {
+          message: "Register successful",
+          data: {
+            user: {
+              username: email,
+            },
+          },
+          timestamp: new Date().toISOString(),
+        },
+        200,
+      );
     } catch (error) {
       return FailureProcess("", 500);
     }

@@ -47,7 +47,23 @@ export class ServiceAuthLogin {
 
       const tokenExpire = jwtObject.createToken({ email, password });
 
-      return SuccessProcess(`Usuario autenticado ${tokenExpire}`, 200);
+      return SuccessProcess(
+        {
+          message: "Login successful",
+          data: {
+            user: {
+              username: result.getUsername(),
+            },
+            tokens: {
+              accessToken: `${tokenExpire}`,
+              tokenType: "Bearer",
+              expiresIn: 1800,
+            },
+          },
+          timestamp: new Date().toISOString(),
+        },
+        200,
+      );
     } catch (error) {
       return FailureProcess("Error internal server" + error, 500);
     }
