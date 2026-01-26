@@ -32,7 +32,8 @@ export class ServiceAuthRegister {
     try {
       const resultFind = this.classUtilsFiles.findById(email);
 
-      if (resultFind) return FailureProcess("user exist", 404);
+      if (resultFind.getPassword().length === 0)
+        return FailureProcess("user exist", 404);
 
       const saltScript = bcryptjs.genSaltSync(10);
       const newPassword = bcryptjs.hashSync(password, saltScript);

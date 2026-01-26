@@ -33,7 +33,7 @@ export class ServiceAuthLogin {
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
       const result = this.classUtilsFiles.findById(email);
-
+      if (!result) return FailureProcess("no se ha encontrado el usuario", 500);
       const comparePassword = bcryptjs.compareSync(
         password,
         result.getPassword(),
@@ -45,7 +45,6 @@ export class ServiceAuthLogin {
         );
       }
 
-      if (!result) return FailureProcess("no se ha encontrado el usuario", 500);
       const tokenExpire = jwtObject.createToken({ email, password });
 
       return SuccessProcess(`Usuario autenticado ${tokenExpire}`, 200);
