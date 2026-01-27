@@ -4,20 +4,6 @@ import Jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
 config();
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        sub: string;
-        username: string;
-        type: string;
-        iat: number;
-        exp: number;
-      };
-    }
-  }
-}
-
 export class MiddlwareJwt {
   private static instance: MiddlwareJwt;
   private readonly secreyKey!: string | any;
@@ -62,7 +48,7 @@ export class MiddlwareJwt {
         return;
       }
 
-      Jwt.verify(token.split(" ")[1], this.secreyKey);
+      Jwt.verify(token.split(" ")[1], this.secreyKey) as any;
       /**
        * Note: en este caso el metodo verify solo lanza exepciones cuando no esta correcto el token
        * pero se debe validad como if no como errores si no como una previa revisión a que si se evalue
