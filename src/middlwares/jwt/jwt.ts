@@ -16,14 +16,14 @@ export class MiddlwareJwt {
   }
 
   createToken(dto: any): string {
-    return Jwt.sign(dto, this.secreyKey, {
+    return Jwt.sign({ dto: dto }, this.secreyKey, {
       algorithm: "HS256",
       expiresIn: "5m",
     });
   }
 
   createTokenRefresh(dto: any): string {
-    return Jwt.sign(dto, this.secreyKey, {
+    return Jwt.sign({ dto: dto }, this.secreyKey, {
       algorithm: "HS256",
       expiresIn: "7d",
     });
@@ -106,7 +106,7 @@ export class MiddlwareJwt {
           409,
         );
       const result = Jwt.verify(token, this.secreyKey);
-      console.log(result);
+      return result;
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
         console.log(error);

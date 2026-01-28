@@ -12,10 +12,33 @@ import {
 export class serviceRefreshToken {
   verifyAccesToken(token: any): IFailureProcess<any> | ISuccessProcess<any> {
     try {
-      MiddlwareJwt.getIntance().verifyTokenRefresh(token);
+      const payload = MiddlwareJwt.getIntance().verifyTokenRefresh(token);
 
-      return SuccessProcess(2, 200);
+      const newAccessToken = MiddlwareJwt.getIntance().createToken(
+        payload.email,
+      );
+
+      return SuccessProcess(
+        {
+          message: "Refresh Token successful",
+          data: {
+            user: {
+              username: payload.email,
+            },
+            tokens: {
+              accessToken: {
+                token: `${newAccessToken}`,
+                tokenType: "Bearer",
+              },
+            },
+          },
+          timestamp: new Date().toISOString(),
+        },
+        200,
+      );
     } catch (error) {
+      console.log(error);
+
       return FailureProcess("", 500);
     }
   }

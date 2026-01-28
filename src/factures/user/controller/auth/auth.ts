@@ -19,7 +19,6 @@ export class AuthController {
 
   login(req: Request, res: Response, next: NextFunction): void {
     const body = req.body;
-    console.log("pase por el controllador");
 
     const result = this.serviceAuth.login(body);
 
