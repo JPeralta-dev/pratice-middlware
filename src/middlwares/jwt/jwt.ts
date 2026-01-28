@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import Jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import { FailureProcess } from "../../utils/result/result";
 
 config();
 
@@ -91,7 +92,52 @@ export class MiddlwareJwt {
   }
 
   verifyTokenRefresh(token: any): any {
-    return Jwt.verify(token, this.secreyKey);
+    try {
+      if (!token)
+        return FailureProcess(
+          {
+            error: {
+              code: "TOKEN_MISSING",
+              message: "Authentication token is required",
+              detail: null,
+            },
+            timestamp: Date().toString(),
+          },
+          409,
+        );
+      const result = Jwt.verify(token, this.secreyKey) as any;
+      console.log(result);
+    } catch (error) {
+      if (error instanceof JsonWebTokenError) {
+        console.log(error);
+
+        return FailureProcess(
+          {
+            error: {
+              code: "TOKEN_INVALID",
+              message: "Authentication token is invalid",
+              detail: null,
+            },
+            timestamp: Date().toString(),
+          },
+          401,
+        );
+      }
+
+      if (error instanceof TokenExpiredError) {
+        return FailureProcess(
+          {
+            error: {
+              code: "TOKEN_EXPIRED",
+              message: "Authentication token has expired",
+              detail: null,
+            },
+            timestamp: Date().toString(),
+          },
+          401,
+        );
+      }
+    }
   }
 
   public static getIntance(): MiddlwareJwt {

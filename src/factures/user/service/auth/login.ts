@@ -45,10 +45,9 @@ export class ServiceAuthLogin {
         );
       }
 
-      const tokenExpire = jwtObject.createToken({ email, password });
+      const tokenExpire = jwtObject.createToken({ email });
       const tokenRefreshSecurity = jwtObject.createTokenRefresh({
         email,
-        password,
       });
 
       return SuccessProcess(
