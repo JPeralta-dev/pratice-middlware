@@ -46,6 +46,10 @@ export class ServiceAuthLogin {
       }
 
       const tokenExpire = jwtObject.createToken({ email, password });
+      const tokenRefreshSecurity = jwtObject.createTokenRefresh({
+        email,
+        password,
+      });
 
       return SuccessProcess(
         {
@@ -55,9 +59,14 @@ export class ServiceAuthLogin {
               username: result.getUsername(),
             },
             tokens: {
-              accessToken: `${tokenExpire}`,
-              tokenType: "Bearer",
-              expiresIn: 1800,
+              accessToken: {
+                token: `${tokenExpire}`,
+                tokenType: "Bearer",
+              },
+              refreshToken: {
+                token: `${tokenRefreshSecurity}`,
+                tokenType: "Bearer",
+              },
             },
           },
           timestamp: new Date().toISOString(),

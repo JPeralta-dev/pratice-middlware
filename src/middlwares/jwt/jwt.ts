@@ -11,12 +11,20 @@ export class MiddlwareJwt {
   private constructor() {
     this.secreyKey = process.env.SECRET_KEY;
     this.verifyToken = this.verifyToken.bind(this);
+    this.verifyTokenRefresh = this.verifyTokenRefresh.bind(this);
   }
 
   createToken(dto: any): string {
     return Jwt.sign(dto, this.secreyKey, {
       algorithm: "HS256",
       expiresIn: "5m",
+    });
+  }
+
+  createTokenRefresh(dto: any): string {
+    return Jwt.sign(dto, this.secreyKey, {
+      algorithm: "HS256",
+      expiresIn: "7d",
     });
   }
 
@@ -80,6 +88,10 @@ export class MiddlwareJwt {
         return;
       }
     }
+  }
+
+  verifyTokenRefresh(token: any): any {
+    return Jwt.verify(token, this.secreyKey);
   }
 
   public static getIntance(): MiddlwareJwt {
