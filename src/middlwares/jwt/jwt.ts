@@ -105,7 +105,7 @@ export class MiddlwareJwt {
           },
           409,
         );
-      const result = Jwt.verify(token, this.secreyKey) as any;
+      const result = Jwt.verify(token, this.secreyKey);
       console.log(result);
     } catch (error) {
       if (error instanceof JsonWebTokenError) {

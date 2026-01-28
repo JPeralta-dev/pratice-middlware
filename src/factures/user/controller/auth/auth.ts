@@ -45,7 +45,7 @@ export class AuthController {
   }
 
   refreshToken(req: Request, res: Response, next: NextFunction): void {
-    const body = req.body;
+    const body = req.body.token;
 
     const result = this.serviceRefresh.verifyAccesToken(body);
 
