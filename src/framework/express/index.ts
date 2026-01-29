@@ -49,7 +49,7 @@ async function serveUp() {
       );
     });
   } catch (error) {
-    console.log("Hubo un error al inicar el server" + error);
+    console.log("Hubo un error al inicar el server " + error);
   }
 }
 

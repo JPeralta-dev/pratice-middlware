@@ -18,6 +18,15 @@ export class redisClient {
     this.client = createClient({
       url: this.url,
       password: this.password,
+      socket: {
+        // Los socket es uyna propiedad que nos ayuda a saber como node va a conectarse y tener mejor control
+        reconnectStrategy: (retries) => {
+          // Bella esta propiedad, nos dice como y cuando node se reconecta a redis
+          return Math.min(retries * 100, 3000); // funcion que dewvuelve el numero mas pequeño que 3000 pero que no se sobre pase
+        },
+        connectTimeout: 5000, // Propiedad que toma el tiempo de espera para conectarse
+        keepAlive: true,
+      },
     });
 
     this.client.on("connect", () => {
@@ -35,10 +44,11 @@ export class redisClient {
 
   async connectRedis(): Promise<void> {
     try {
-      this.client.connect();
+      await this.client.connect();
       this.statusRedis = true;
     } catch (error) {
       console.log("error" + error);
+      throw error;
     }
   }
 
@@ -53,6 +63,13 @@ export class redisClient {
     } catch (error) {
       return false;
     }
+  }
+
+  getClient() {
+    if (!this.statusRedis) {
+      throw new Error("Redis no ha iniciado");
+    }
+    return this.client;
   }
 
   public static getIntance(): redisClient {

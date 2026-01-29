@@ -16,7 +16,8 @@ export class MiddlwareJwt {
   }
 
   createToken(dto: any): string {
-    return Jwt.sign({ dto: dto }, this.secreyKey, {
+    const jti = crypto.randomUUID();
+    return Jwt.sign({ ...dto, jti, type: "access" }, this.secreyKey, {
       algorithm: "HS256",
       expiresIn: "5m",
     });
