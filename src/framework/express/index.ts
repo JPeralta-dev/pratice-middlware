@@ -5,6 +5,7 @@ import { routeAuth } from "../../factures/user/route/auth/auth";
 import { routeUser } from "../../factures/user/route/user/user";
 import { MiddlwareJwt } from "../../middlwares/jwt/jwt";
 import { routeTaks } from "../../factures/taks/route/route";
+import { redisClient } from "../../config/db/redis/redis";
 
 const app = express();
 
@@ -24,6 +25,32 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Server builder ... ✔");
 });
 
-app.listen(PORT, () => {
-  console.log(`esta encendido el server en el puerto http://localhost:${PORT}`);
+app.get("/health", async (req: Request, res: Response) => {
+  const status = redisClient.getIntance().getStatus();
+  const isPingOk = await redisClient.getIntance().ping();
+
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    redis: {
+      connected: status,
+      ready: status,
+      ping: isPingOk,
+    },
+  });
 });
+
+async function serveUp() {
+  try {
+    await redisClient.getIntance().connectRedis();
+    app.listen(PORT, () => {
+      console.log(
+        `esta encendido el server en el puerto http://localhost:${PORT}`,
+      );
+    });
+  } catch (error) {
+    console.log("Hubo un error al inicar el server" + error);
+  }
+}
+
+serveUp();
