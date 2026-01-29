@@ -22,7 +22,9 @@ export class ServiceTaks {
       this.classUtilsFiles.save(object);
       return SuccessProcess("saved successfully", 200);
     } catch (error) {
-      return FailureProcess("", 500);
+      console.log(error);
+
+      return FailureProcess("Error internal server", 500);
     }
   }
   findByCreated(id: string): IFailureProcess<any> | ISuccessProcess<any> {
@@ -32,21 +34,23 @@ export class ServiceTaks {
 
       return SuccessProcess(resultOfFind, 200);
     } catch (error) {
-      return FailureProcess("", 500);
+      console.log(error);
+
+      return FailureProcess("Error internal server", 500);
     }
   }
-  find(): IFailureProcess<any> | ISuccessProcess<any> {
-    try {
-      return SuccessProcess("", 200);
-    } catch (error) {
-      return FailureProcess("", 500);
-    }
-  }
-  update(): IFailureProcess<any> | ISuccessProcess<any> {
-    try {
-      return SuccessProcess("", 200);
-    } catch (error) {
-      return FailureProcess("", 500);
-    }
-  }
+  // find(): IFailureProcess<any> | ISuccessProcess<any> {
+  //   try {
+  //     return SuccessProcess("", 200);
+  //   } catch (error) {
+  //     return FailureProcess("", 500);
+  //   }
+  // }
+  // update(): IFailureProcess<any> | ISuccessProcess<any> {
+  //   try {
+  //     return SuccessProcess("", 200);
+  //   } catch (error) {
+  //     return FailureProcess("", 500);
+  //   }
+  // }
 }

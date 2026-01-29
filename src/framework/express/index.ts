@@ -3,15 +3,15 @@ import morgan from "morgan";
 import { routeBase } from "../../config/route/route";
 import { routeAuth } from "../../factures/user/route/auth/auth";
 import { routeUser } from "../../factures/user/route/user/user";
-import { MiddlwareJwt } from "../../middlwares/jwt/jwt";
+import { JwtMiddlware } from "../../middlwares/jwt/jwt";
 import { routeTaks } from "../../factures/taks/route/route";
-import { redisClient } from "../../config/db/redis/redis";
+import { RedisClient } from "../../config/db/redis/redis";
 
 const app = express();
 
 const PORT = 3000;
 
-export const jwtObject: MiddlwareJwt = MiddlwareJwt.getIntance();
+export const jwtObject: JwtMiddlware = JwtMiddlware.getIntance();
 
 app.use(json());
 
@@ -26,8 +26,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/health", async (req: Request, res: Response) => {
-  const status = redisClient.getIntance().getStatus();
-  const isPingOk = await redisClient.getIntance().ping();
+  const status = RedisClient.getIntance().getStatus();
+  const isPingOk = await RedisClient.getIntance().ping();
 
   res.json({
     status: "ok",
@@ -42,7 +42,7 @@ app.get("/health", async (req: Request, res: Response) => {
 
 async function serveUp() {
   try {
-    await redisClient.getIntance().connectRedis();
+    await RedisClient.getIntance().connectRedis();
     app.listen(PORT, () => {
       console.log(
         `esta encendido el server en el puerto http://localhost:${PORT}`,

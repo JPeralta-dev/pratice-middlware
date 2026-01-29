@@ -33,7 +33,7 @@ export class ServiceAuthRegister {
       const resultFind = this.classUtilsFiles.findById(email);
 
       if (resultFind.getPassword().length === 0)
-        return FailureProcess("user exist", 404);
+        return FailureProcess("user exist", 409);
 
       const saltScript = bcryptjs.genSaltSync(10);
       const newPassword = bcryptjs.hashSync(password, saltScript);
@@ -54,7 +54,7 @@ export class ServiceAuthRegister {
         200,
       );
     } catch (error) {
-      return FailureProcess("", 500);
+      return FailureProcess("Error internal server", 500);
     }
   }
 }

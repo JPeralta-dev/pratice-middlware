@@ -33,7 +33,8 @@ export class ServiceAuthLogin {
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
       const result = this.classUtilsFiles.findById(email);
-      if (!result) return FailureProcess("no se ha encontrado el usuario", 500);
+      if (!result || result.getUsername() === "")
+        return FailureProcess("User Not Found", 404);
       const comparePassword = bcryptjs.compareSync(
         password,
         result.getPassword(),
@@ -73,7 +74,7 @@ export class ServiceAuthLogin {
         200,
       );
     } catch (error) {
-      return FailureProcess("Error internal server" + error, 500);
+      return FailureProcess("Error internal server", 500);
     }
   }
 }

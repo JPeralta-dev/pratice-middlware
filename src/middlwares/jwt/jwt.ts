@@ -5,26 +5,26 @@ import { FailureProcess } from "../../utils/result/result";
 
 config();
 
-export class MiddlwareJwt {
-  private static instance: MiddlwareJwt;
-  private readonly secreyKey!: string | any;
+export class JwtMiddlware {
+  private static instance: JwtMiddlware;
+  private readonly secretKey!: string | any;
 
   private constructor() {
-    this.secreyKey = process.env.SECRET_KEY;
+    this.secretKey = process.env.SECRET_KEY;
     this.verifyToken = this.verifyToken.bind(this);
     this.verifyTokenRefresh = this.verifyTokenRefresh.bind(this);
   }
 
   createToken(dto: any): string {
     const jti = crypto.randomUUID();
-    return Jwt.sign({ ...dto, jti, type: "access" }, this.secreyKey, {
+    return Jwt.sign({ ...dto, jti, type: "access" }, this.secretKey, {
       algorithm: "HS256",
       expiresIn: "5m",
     });
   }
 
   createTokenRefresh(dto: any): string {
-    return Jwt.sign({ dto: dto }, this.secreyKey, {
+    return Jwt.sign({ dto: dto }, this.secretKey, {
       algorithm: "HS256",
       expiresIn: "7d",
     });
@@ -58,7 +58,7 @@ export class MiddlwareJwt {
         return;
       }
 
-      Jwt.verify(token.split(" ")[1], this.secreyKey) as any;
+      Jwt.verify(token.split(" ")[1], this.secretKey) as any;
       /**
        * Note: en este caso el metodo verify solo lanza exepciones cuando no esta correcto el token
        * pero se debe validad como if no como errores si no como una previa revisión a que si se evalue
@@ -104,9 +104,9 @@ export class MiddlwareJwt {
             },
             timestamp: Date().toString(),
           },
-          409,
+          401,
         );
-      const result = Jwt.verify(token, this.secreyKey);
+      const result = Jwt.verify(token, this.secretKey);
       return result;
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
@@ -141,9 +141,9 @@ export class MiddlwareJwt {
     }
   }
 
-  public static getIntance(): MiddlwareJwt {
+  public static getIntance(): JwtMiddlware {
     if (!this.instance) {
-      return (this.instance = new MiddlwareJwt());
+      return (this.instance = new JwtMiddlware());
     }
     return this.instance;
   }

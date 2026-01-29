@@ -1,5 +1,5 @@
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-import { MiddlwareJwt } from "../../../../middlwares/jwt/jwt";
+import { JwtMiddlware } from "../../../../middlwares/jwt/jwt";
 import {
   IFailureProcess,
   ISuccessProcess,
@@ -12,9 +12,9 @@ import {
 export class serviceRefreshToken {
   verifyAccesToken(token: any): IFailureProcess<any> | ISuccessProcess<any> {
     try {
-      const payload = MiddlwareJwt.getIntance().verifyTokenRefresh(token);
+      const payload = JwtMiddlware.getIntance().verifyTokenRefresh(token);
 
-      const newAccessToken = MiddlwareJwt.getIntance().createToken(
+      const newAccessToken = JwtMiddlware.getIntance().createToken(
         payload.email,
       );
 
@@ -39,7 +39,7 @@ export class serviceRefreshToken {
     } catch (error) {
       console.log(error);
 
-      return FailureProcess("", 500);
+      return FailureProcess("Error internal server", 500);
     }
   }
 }

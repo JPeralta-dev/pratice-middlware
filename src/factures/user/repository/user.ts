@@ -26,8 +26,6 @@ export class RepositoryUser extends fileUtils implements ICrudReposity<User> {
     const result = vector.find((value) => value.username === id);
 
     if (!result) {
-      console.log("estoy aca");
-
       return new User("", "");
     }
 

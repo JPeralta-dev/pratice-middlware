@@ -1,17 +1,22 @@
-import { IFailureProcess, ISuccessProcess } from '../../interfaces/resutl/result'
+import {
+  IFailureProcess,
+  ISuccessProcess,
+} from "../../interfaces/resutl/result";
 
 export const FailureProcess = <T>(
   error: T,
-  statuCode: number): IFailureProcess<T> => ({
-    statuCode,
-    error,
-    success: false
-  })
+  statusCode: number,
+): IFailureProcess<T> => ({
+  statusCode,
+  error,
+  success: false,
+});
 
 export const SuccessProcess = <T>(
   value: T,
-  statuCode: number): ISuccessProcess<T> => ({
-    statuCode,
-    value,
-    success: true
-  })
+  statusCode: number,
+): ISuccessProcess<T> => ({
+  statusCode,
+  value,
+  success: true,
+});

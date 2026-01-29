@@ -23,11 +23,11 @@ export class AuthController {
     const result = this.serviceAuth.login(body);
 
     if (!result.success) {
-      res.status(result.statuCode).json({ error: result.error });
+      res.status(result.statusCode).json({ error: result.error });
       return;
     }
 
-    res.status(result.statuCode).json({ message: result.value });
+    res.status(result.statusCode).json({ message: result.value });
   }
 
   register(req: Request, res: Response, next: NextFunction): void {
@@ -36,11 +36,11 @@ export class AuthController {
     const result = this.serviceRegister.register(body);
 
     if (!result.success) {
-      res.status(result.statuCode).json({ error: result.error });
+      res.status(result.statusCode).json({ error: result.error });
       return;
     }
 
-    res.status(result.statuCode).json({ message: result.value });
+    res.status(result.statusCode).json({ message: result.value });
   }
 
   refreshToken(req: Request, res: Response, next: NextFunction): void {
@@ -49,10 +49,10 @@ export class AuthController {
     const result = this.serviceRefresh.verifyAccesToken(body);
 
     if (!result.success) {
-      res.status(result.statuCode).json({ error: result.error });
+      res.status(result.statusCode).json({ error: result.error });
       return;
     }
 
-    res.status(result.statuCode).json({ message: result.value });
+    res.status(result.statusCode).json({ message: result.value });
   }
 }

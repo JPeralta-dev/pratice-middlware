@@ -3,8 +3,8 @@ import { config } from "dotenv";
 
 config();
 
-export class redisClient {
-  private static redis: redisClient;
+export class RedisClient {
+  private static redis: RedisClient;
   private readonly client: RedisClientType;
   private readonly password: string;
   private readonly url: string;
@@ -13,8 +13,11 @@ export class redisClient {
   private constructor() {
     this.statusRedis = false;
     this.password = process.env.PASSWORD_REDIS?.toString() || "";
-    this.url = process.env.URL_REDIS?.toString() || "";
+    this.url = process.env.URL_REDIS?.toString() || "redis://localhost:6379";
 
+    if (!this.url) {
+      throw new Error("Not found url redis in file .env");
+    }
     this.client = createClient({
       url: this.url,
       password: this.password,
@@ -47,7 +50,7 @@ export class redisClient {
       await this.client.connect();
       this.statusRedis = true;
     } catch (error) {
-      console.log("error" + error);
+      console.log("error" + error); // TODOS:MANEJO DE ERROES CORRECTO
       throw error;
     }
   }
@@ -72,9 +75,9 @@ export class redisClient {
     return this.client;
   }
 
-  public static getIntance(): redisClient {
+  public static getIntance(): RedisClient {
     if (!this.redis) {
-      this.redis = new redisClient();
+      this.redis = new RedisClient();
       return this.redis;
     }
     return this.redis;

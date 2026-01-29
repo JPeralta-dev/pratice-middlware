@@ -25,7 +25,7 @@ export class fileUtils {
       fs.writeFileSync(this.pathTheFile, JSON.stringify(vector));
       console.log("mira aqui llego veamos si funciono");
     } catch (error) {
-      return [error];
+      return [error]; // TODOS:MANEJO DE ERRORES CORRECTO
     }
   }
 }
