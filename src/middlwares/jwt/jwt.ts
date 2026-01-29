@@ -24,7 +24,8 @@ export class JwtMiddlware {
   }
 
   createTokenRefresh(dto: any): string {
-    return Jwt.sign({ dto: dto }, this.secretKey, {
+    const jti = crypto.randomUUID();
+    return Jwt.sign({ ...dto, jti, type: "refresh" }, this.secretKey, {
       algorithm: "HS256",
       expiresIn: "7d",
     });

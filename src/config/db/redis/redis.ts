@@ -44,10 +44,10 @@ export class RedisClient {
       console.log("hubo un error y es" + error);
     });
 
-    this.client.on('SIGINT', async ()=>{
-      console.log('Cerrando servidor...');
-      await this.client.
-    })
+    this.client.on("SIGINT", async () => {
+      console.log("Cerrando servidor...");
+      await RedisClient.getIntance().disconnect();
+    });
   }
 
   async connectRedis(): Promise<void> {
@@ -80,12 +80,14 @@ export class RedisClient {
     return this.client;
   }
 
-  async disconnect():Promise<void>{
+  async disconnect(): Promise<void> {
     try {
-      this.client.close()
-      this.statusRedis = false
+      if (this.statusRedis) {
+        await this.client.close();
+        this.statusRedis = false;
+      }
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
