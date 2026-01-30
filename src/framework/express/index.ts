@@ -61,3 +61,4 @@ process.on("SIGINT", async () => {
   console.log("✅ Redis desconectado");
   process.exit(0);
 });
+// bueno tener un evento que pueda desconectar el todo antes de caer

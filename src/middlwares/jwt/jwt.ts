@@ -59,7 +59,7 @@ export class JwtMiddlware {
         return;
       }
 
-      Jwt.verify(token.split(" ")[1], this.secretKey) as any;
+      const decoded = Jwt.verify(token.split(" ")[1], this.secretKey) as any;
       /**
        * Note: en este caso el metodo verify solo lanza exepciones cuando no esta correcto el token
        * pero se debe validad como if no como errores si no como una previa revisión a que si se evalue

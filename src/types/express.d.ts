@@ -2,10 +2,12 @@ declare global {
   namespace Express {
     interface Request {
       user?: {
+        email?: string;
         username: string;
         type: string;
         iat: number;
         exp: number;
+        jti?: string;
       };
     }
   }
