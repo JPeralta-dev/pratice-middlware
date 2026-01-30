@@ -42,12 +42,18 @@ export class ServiceAuthLogin {
       if (!comparePassword) {
         return FailureProcess(
           "Password or username incorrecto, please try again",
-          403,
+          401,
         );
       }
 
-      const tokenExpire = jwtObject.createToken({ email });
+      const tokenExpire = jwtObject.createToken({
+        sub: email, // El campo sub (subject) es el estándar JWT para identificar al usuario. También facilita usar req.user.username en controllers.
+        username: email,
+        email,
+      });
       const tokenRefreshSecurity = jwtObject.createTokenRefresh({
+        sub: email,
+        username: email,
         email,
       });
 

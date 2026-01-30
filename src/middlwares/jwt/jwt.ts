@@ -36,7 +36,7 @@ export class JwtMiddlware {
       const token = req.headers.authorization;
 
       if (!token) {
-        res.status(409).json({
+        res.status(401).json({
           error: {
             code: "TOKEN_MISSING",
             message: "Authentication token is required",

@@ -54,3 +54,10 @@ async function serveUp() {
 }
 
 serveUp();
+
+process.on("SIGINT", async () => {
+  console.log("\n🛑 Cerrando servidor...");
+  await RedisClient.getIntance().disconnect();
+  console.log("✅ Redis desconectado");
+  process.exit(0);
+});
