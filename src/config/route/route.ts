@@ -1,10 +1,10 @@
-import { Router } from 'express'
+import { Router } from "express";
 
-export const route = Router()
+export const route = Router();
 
-export const routeBase = '/api/v1'
+export const routeBase = "/api/v1";
 
 export const pathData = {
-  USERS: 'src/data/users',
-  TACKS: 'src/data/taks'
-}
+  USERS: "../../factures/user/data",
+  TACKS: "../../factures/taks/data",
+};
