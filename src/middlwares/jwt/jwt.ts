@@ -16,7 +16,7 @@ export class JwtMiddlware {
   }
 
   createToken(dto: any): string {
-    const jti = crypto.randomUUID();
+    const jti = crypto.randomUUID(); //  identificador unico
     return Jwt.sign({ ...dto, jti, type: "access" }, this.secretKey, {
       algorithm: "HS256",
       expiresIn: "5m",
@@ -59,7 +59,7 @@ export class JwtMiddlware {
         return;
       }
 
-      const decoded = Jwt.verify(token.split(" ")[1], this.secretKey) as any;
+      Jwt.verify(token.split(" ")[1], this.secretKey) as any; // -> larxar exepcion si algo pasa y si no sigu4e como si nada
       /**
        * Note: en este caso el metodo verify solo lanza exepciones cuando no esta correcto el token
        * pero se debe validad como if no como errores si no como una previa revisión a que si se evalue

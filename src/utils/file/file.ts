@@ -13,7 +13,7 @@ export class fileUtils {
       const parsedJson: [] = JSON.parse(resultToString);
       return parsedJson;
     } catch (error) {
-      return []; // it's no best way for this example
+      return []; // it's no best way for this example todo: manerjo de errores correcto eso que es
     }
   }
 
@@ -23,7 +23,6 @@ export class fileUtils {
       const vector = this.readFile();
       vector.push(object);
       fs.writeFileSync(this.pathTheFile, JSON.stringify(vector));
-      console.log("mira aqui llego veamos si funciono");
     } catch (error) {
       return [error]; // TODOS:MANEJO DE ERRORES CORRECTO
     }

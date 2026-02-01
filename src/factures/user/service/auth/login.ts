@@ -21,7 +21,7 @@ export class ServiceAuthLogin {
   private readonly classUtilsFiles: ICrudReposity<User>;
   constructor() {
     this.path = path.join(process.cwd(), pathData.USERS, "/user.json");
-    this.classUtilsFiles = new RepositoryUser(this.path);
+    this.classUtilsFiles = new RepositoryUser(this.path); // MALA PRACTICA ❌
   }
 
   login({
@@ -35,13 +35,14 @@ export class ServiceAuthLogin {
       const result = this.classUtilsFiles.findById(email);
       if (!result || result.getUsername() === "")
         return FailureProcess("User Not Found", 404);
+
       const comparePassword = bcryptjs.compareSync(
-        password,
-        result.getPassword(),
+        password, // -> esta viene de la request
+        result.getPassword(), // -> la guardada en la base de datos
       );
       if (!comparePassword) {
         return FailureProcess(
-          "Password or username incorrecto, please try again",
+          "Password or username incorrect, please try again",
           401,
         );
       }
