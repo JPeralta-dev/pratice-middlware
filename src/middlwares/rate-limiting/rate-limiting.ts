@@ -5,6 +5,7 @@ export class RateLimitingMiddlware {
 
   public rateLimitingByUser(req: Request, res: Response, next: NextFunction) {
     // ahora mismo necesitaria el req.user para obtener el user
+    const user = (req as any).user?.username;
   }
 
   public static getInstance(): RateLimitingMiddlware {

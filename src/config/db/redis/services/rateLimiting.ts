@@ -12,7 +12,7 @@ export class rateLimingRedis {
     const contador = await this.redisClient.incr(key);
 
     if (contador === 1) {
-      this.redisClient.expire(key, 60);
+      await this.redisClient.expire(key, 60);
     }
 
     if (contador > 5) {

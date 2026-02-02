@@ -21,7 +21,7 @@ export class JwtMiddlware {
 
   createToken(dto: any): string {
     const jti = crypto.randomUUID(); //  identificador unico
-    return Jwt.sign({ ...dto, jti, type: "access" }, this.secretKey, {
+    return Jwt.sign({ dto, jti, type: "access" }, this.secretKey, {
       algorithm: "HS256",
       expiresIn: "5m",
     });
@@ -29,7 +29,7 @@ export class JwtMiddlware {
 
   createTokenRefresh(dto: any): string {
     const jti = crypto.randomUUID();
-    return Jwt.sign({ ...dto, jti, type: "refresh" }, this.secretKey, {
+    return Jwt.sign({ dto, jti, type: "refresh" }, this.secretKey, {
       algorithm: "HS256",
       expiresIn: "7d",
     });
@@ -72,10 +72,15 @@ export class JwtMiddlware {
        * pero se debe validad como if no como errores si no como una previa revisión a que si se evalue
        */
 
-      req.body.info = {
-        user: payload.sub,
+      (req as any).user = {
+        username: payload.dto.sub,
+        email: payload.dto.email,
+        type: payload.type,
+        iat: payload.iat,
+        exp: payload.exp,
+        jti: payload.jti,
       };
-      console.log(req.body);
+      console.log(req);
 
       next();
     } catch (error) {
