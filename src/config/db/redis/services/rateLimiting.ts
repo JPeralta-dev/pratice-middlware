@@ -20,5 +20,6 @@ export class rateLimingRedis {
       console.log(ttl);
       return false;
     }
+    return true;
   }
 }

@@ -13,15 +13,15 @@ import { ICrudReposity } from "../../../../interfaces/Repository/repository";
 import path from "path";
 import { RepositoryUser } from "../../repository/user";
 
-import { jwtObject } from "../../../../framework/express";
 import { User } from "../../entity/User";
+import { instanceJwtMiddlware } from "../../../../middlwares/jwt/jwt";
 
 export class ServiceAuthLogin {
   private readonly path: string;
   private readonly classUtilsFiles: ICrudReposity<User>;
   constructor() {
     this.path = path.join(process.cwd(), pathData.USERS, "/user.json");
-    this.classUtilsFiles = new RepositoryUser(this.path); // MALA PRACTICA ❌
+    this.classUtilsFiles = new RepositoryUser(this.path); // MALA PRACTICA ❌ lo se tengo flojera
   }
 
   login({
@@ -33,6 +33,8 @@ export class ServiceAuthLogin {
   }): IFailureProcess<any> | ISuccessProcess<any> {
     try {
       const result = this.classUtilsFiles.findById(email);
+      console.log(result);
+
       if (!result || result.getUsername() === "")
         return FailureProcess("User Not Found", 404);
 
@@ -47,12 +49,12 @@ export class ServiceAuthLogin {
         );
       }
 
-      const tokenExpire = jwtObject.createToken({
+      const tokenExpire = instanceJwtMiddlware.createToken({
         sub: email, // El campo sub (subject) es el estándar JWT para identificar al usuario. También facilita usar req.user.username en controllers.
         username: email,
         email,
       });
-      const tokenRefreshSecurity = jwtObject.createTokenRefresh({
+      const tokenRefreshSecurity = instanceJwtMiddlware.createTokenRefresh({
         sub: email,
         username: email,
         email,

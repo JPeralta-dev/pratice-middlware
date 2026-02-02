@@ -1,6 +1,10 @@
 import { config } from "dotenv";
 import { NextFunction, Request, Response } from "express";
-import Jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import Jwt, {
+  JsonWebTokenError,
+  TokenExpiredError,
+  JwtPayload,
+} from "jsonwebtoken";
 import { FailureProcess } from "../../utils/result/result";
 
 config();
@@ -59,11 +63,19 @@ export class JwtMiddlware {
         return;
       }
 
-      Jwt.verify(token.split(" ")[1], this.secretKey) as any; // -> larxar exepcion si algo pasa y si no sigu4e como si nada
+      const payload = Jwt.verify(
+        token.split(" ")[1],
+        this.secretKey,
+      ) as JwtPayload; // -> larxar exepcion si algo pasa y si no sigu4e como si nada
       /**
        * Note: en este caso el metodo verify solo lanza exepciones cuando no esta correcto el token
        * pero se debe validad como if no como errores si no como una previa revisión a que si se evalue
        */
+
+      req.body.info = {
+        user: payload.sub,
+      };
+      console.log(req.body);
 
       next();
     } catch (error) {
