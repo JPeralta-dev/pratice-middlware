@@ -5,13 +5,11 @@ import { routeAuth } from "../../factures/user/route/auth/auth";
 import { routeUser } from "../../factures/user/route/user/user";
 import { JwtMiddlware } from "../../middlwares/jwt/jwt";
 import { routeTaks } from "../../factures/taks/route/route";
-import { RedisClient } from "../../config/db/redis/redis";
+import { instanceRedis } from "../../config/db/redis/redis";
 
 const app = express();
 
 const PORT = 3000;
-
-export const jwtObject: JwtMiddlware = JwtMiddlware.getIntance();
 
 app.use(json());
 
@@ -26,8 +24,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/health", async (req: Request, res: Response) => {
-  const status = RedisClient.getIntance().getStatus();
-  const isPingOk = await RedisClient.getIntance().ping();
+  const status = instanceRedis.getStatus();
+  const isPingOk = await instanceRedis.ping();
 
   res.json({
     status: "ok",
@@ -42,7 +40,7 @@ app.get("/health", async (req: Request, res: Response) => {
 
 async function serveUp() {
   try {
-    await RedisClient.getIntance().connectRedis();
+    await instanceRedis.connectRedis();
     app.listen(PORT, () => {
       console.log(
         `esta encendido el server en el puerto http://localhost:${PORT}`,
@@ -57,7 +55,7 @@ serveUp();
 
 process.on("SIGINT", async () => {
   console.log("\n🛑 Cerrando servidor...");
-  await RedisClient.getIntance().disconnect();
+  await instanceRedis.disconnect();
   console.log("✅ Redis desconectado");
   process.exit(0);
 });

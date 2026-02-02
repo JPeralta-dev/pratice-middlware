@@ -99,3 +99,5 @@ export class RedisClient {
     return this.redis;
   }
 }
+
+export const instanceRedis = RedisClient.getIntance();

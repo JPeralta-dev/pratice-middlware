@@ -149,3 +149,5 @@ export class JwtMiddlware {
     return this.instance;
   }
 }
+
+export const instanceJwtMiddlware = JwtMiddlware.getIntance();
