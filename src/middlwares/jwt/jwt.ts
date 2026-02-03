@@ -80,7 +80,6 @@ export class JwtMiddlware {
         exp: payload.exp,
         jti: payload.jti,
       };
-      console.log(req);
 
       next();
     } catch (error) {

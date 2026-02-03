@@ -4,7 +4,11 @@ import { instanceRateLimiting } from "../../config/db/redis/services/rateLimitin
 export class RateLimitingMiddlware {
   private static instace: RateLimitingMiddlware;
 
-  public rateLimitingByUser(req: Request, res: Response, next: NextFunction) {
+  public async rateLimitingByUser(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     // ahora mismo necesitaria el req.user para obtener el user
     try {
       const user = (req as any).user?.username;
@@ -20,7 +24,7 @@ export class RateLimitingMiddlware {
         return;
       }
 
-      const isAlwod = instanceRateLimiting.rateControllerByUser(user);
+      const isAlwod = await instanceRateLimiting.rateControllerByUser(user);
 
       if (!isAlwod) {
         res.status(429).json({
