@@ -3,11 +3,23 @@ import { GenerateKeyRedis } from "../namespaces";
 import { instanceRedis } from "../redis";
 
 export class rateLimingRedis {
-  private readonly redisClient: RedisClientType;
+  private redisClient: RedisClientType | null = null;
+
   constructor() {
-    this.redisClient = instanceRedis.getClient();
+    // El constructor es sincrónico
+    this.initialize();
   }
+
+  private async initialize() {
+    this.redisClient = await instanceRedis.getClient();
+  }
+
   async rateControllerByUser(user: string) {
+    // Espera a que el cliente esté conectado
+    while (this.redisClient === null) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
     const key = GenerateKeyRedis.rateLimitingByUser(user);
     const contador = await this.redisClient.incr(key);
 
@@ -23,3 +35,5 @@ export class rateLimingRedis {
     return true;
   }
 }
+
+export const instanceRateLimiting = new rateLimingRedis();
