@@ -74,7 +74,6 @@ export class RedisClient {
   }
 
   async getClient() {
-    await this.connectRedis();
     if (!this.statusRedis) {
       throw new Error("Redis no ha iniciado");
     }
