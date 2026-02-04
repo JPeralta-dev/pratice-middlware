@@ -9,6 +9,7 @@ export class RedisClient {
   private readonly password: string;
   private readonly url: string;
   private statusRedis: boolean;
+  private connectPromise: Promise<void> | null = null;
 
   private constructor() {
     this.statusRedis = false;
@@ -50,14 +51,20 @@ export class RedisClient {
     });
   }
 
-  async connectRedis(): Promise<void> {
-    try {
-      await this.client.connect();
-      this.statusRedis = true;
-    } catch (error) {
-      console.log("error" + error); // TODOS:MANEJO DE ERROES CORRECTO
-      throw error;
+  async connectRedis() {
+    if (!this.connectPromise) {
+      this.connectPromise = (async () => {
+        try {
+          await this.client.connect();
+          this.statusRedis = true;
+        } catch (error) {
+          this.connectPromise = null;
+          console.log("error" + error); // TODOS:MANEJO DE ERROES CORRECTO
+          throw error;
+        }
+      })();
     }
+    return this.connectPromise;
   }
 
   getStatus(): boolean {
@@ -74,9 +81,9 @@ export class RedisClient {
   }
 
   async getClient() {
-    // if (!this.statusRedis) {
-    //   throw new Error("Redis no ha iniciado");
-    // }
+    if (!this.statusRedis) {
+      await this.connectPromise;
+    }
     return this.client;
   }
 

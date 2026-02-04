@@ -5,19 +5,10 @@ import { instanceRedis } from "../redis";
 export class rateLimingRedis {
   private redisClient: RedisClientType | null = null;
 
-  constructor() {
-    // El constructor es sincrónico
-    this.initialize();
-  }
-
-  private async initialize() {
-    this.redisClient = await instanceRedis.getClient();
-  }
-
   async rateControllerByUser(user: string) {
     // Espera a que el cliente esté conectado
-    while (this.redisClient === null) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    if (!this.redisClient) {
+      this.redisClient = await instanceRedis.getClient();
     }
 
     const key = GenerateKeyRedis.rateLimitingByUser(user);
