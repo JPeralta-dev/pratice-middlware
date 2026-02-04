@@ -38,6 +38,7 @@ app.get("/health", async (req: Request, res: Response) => {
   });
 });
 
+//Ojo con los nombres de las funciones, serverUp
 async function serveUp() {
   try {
     await instanceRedis.connectRedis();
@@ -60,3 +61,11 @@ process.on("SIGINT", async () => {
   process.exit(0);
 });
 // bueno tener un evento que pueda desconectar el todo antes de caer
+
+/**
+ * Por el momento lo que noto es mucho ANY
+ * también que no estas usando un lintter ni formateador de código
+ * falta manejo de errores centralizado
+ * falta validaciones de datos de entrada
+ * Nombres poco descriptivos y en las carpetas/archivos algnos están con iniciales en Mayuscula y otros en minuscula
+ */

@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import { User } from "../../factures/user/interface/user";
+import * as fs from "fs"; // usar fs/promises para no bloquear el event loop, además  import fs from 'node:fs'  es la manera correcta y en caso de promesas es import fs from 'node:fs/promises';
+import { User } from "../../factures/user/interface/user"; // No se está utilizando
 
 export class fileUtils {
   constructor(public pathTheFile: string) {

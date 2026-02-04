@@ -13,12 +13,14 @@ export class RedisClient {
 
   private constructor() {
     this.statusRedis = false;
-    this.password = process.env.PASSWORD_REDIS?.toString() || "";
+    this.password = process.env.PASSWORD_REDIS?.toString() || ""; // Sacar a un objeto que contenga todas las envs, ya que acceder al env es costoso. Se puede usar algo como const envs = z.object({VARIABLE: z.string()...}) })
     this.url = process.env.URL_REDIS?.toString() || "redis://localhost:6379";
 
     if (!this.url) {
+      // con el paso anterior nos ahorramos esto de aquí
       throw new Error("Not found url redis in file .env");
     }
+
     this.client = createClient({
       url: this.url,
       password: this.password,
