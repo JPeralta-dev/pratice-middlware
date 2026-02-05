@@ -45,6 +45,15 @@ export class RateLimitingMiddlware {
     }
   }
 
+  public async rateLimitingByIp(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+    } catch (error) {}
+  }
+
   public static getInstance(): RateLimitingMiddlware {
     if (!this.instace) {
       this.instace = new RateLimitingMiddlware();
