@@ -14,12 +14,14 @@ export class ServiceTaks {
     this.classUtilsFiles = new repositoryTaks(this.paths);
   }
 
-  save(object: any): IFailureProcess<any> | ISuccessProcess<any> {
+  async save(
+    object: any,
+  ): Promise<IFailureProcess<string> | ISuccessProcess<string>> {
     try {
-      const findTaks = this.classUtilsFiles.findById(object.id);
+      const findTaks = await this.classUtilsFiles.findById(object.id);
       if (findTaks) return FailureProcess("ya esta tarea tiene ese id", 404);
 
-      this.classUtilsFiles.save(object);
+      await this.classUtilsFiles.save(object);
       return SuccessProcess("saved successfully", 200);
     } catch (error) {
       console.log(error);
@@ -27,9 +29,11 @@ export class ServiceTaks {
       return FailureProcess("Error internal server", 500);
     }
   }
-  findByCreated(id: string): IFailureProcess<any> | ISuccessProcess<any> {
+  async findByCreated(
+    id: string,
+  ): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
     try {
-      const resultOfFind = this.classUtilsFiles.findByCreated(id);
+      const resultOfFind = await this.classUtilsFiles.findByCreated(id);
       if (!resultOfFind) return FailureProcess("No tienes tareas aun", 404);
 
       return SuccessProcess(resultOfFind, 200);

@@ -38,8 +38,7 @@ app.get("/health", async (req: Request, res: Response) => {
   });
 });
 
-//Ojo con los nombres de las funciones, serverUp
-async function serveUp() {
+async function Main() {
   try {
     await instanceRedis.connectRedis();
     app.listen(PORT, () => {
@@ -52,7 +51,7 @@ async function serveUp() {
   }
 }
 
-serveUp();
+Main();
 
 process.on("SIGINT", async () => {
   console.log("\n🛑 Cerrando servidor...");
@@ -60,12 +59,12 @@ process.on("SIGINT", async () => {
   console.log("✅ Redis desconectado");
   process.exit(0);
 });
-// bueno tener un evento que pueda desconectar el todo antes de caer
+// bueno tener un evento que pueda desconectar el todo antes de caer ✔
 
 /**
- * Por el momento lo que noto es mucho ANY
- * también que no estas usando un lintter ni formateador de código
- * falta manejo de errores centralizado
- * falta validaciones de datos de entrada
- * Nombres poco descriptivos y en las carpetas/archivos algnos están con iniciales en Mayuscula y otros en minuscula
+ * Por el momento lo que noto es mucho ANY -> pescueso ya voy hacer eso
+ * también que no estas usando un lintter ni formateador de código : por realizar
+ * falta manejo de errores centralizado : Por aprender porque no se, hacerlo correctamente
+ * falta validaciones de datos de entrada : me dio flojera esto JAJSDJAJSDJASJ
+ * Nombres poco descriptivos y en las carpetas/archivos algnos están con iniciales en Mayuscula y otros en minuscula:
  */

@@ -17,10 +17,10 @@ export class AuthController {
     this.refreshToken = this.refreshToken.bind(this);
   }
 
-  login(req: Request, res: Response, next: NextFunction): void {
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     const body = req.body;
 
-    const result = this.serviceAuth.login(body);
+    const result = await this.serviceAuth.login(body);
 
     if (!result.success) {
       res.status(result.statusCode).json({ error: result.error });
@@ -30,10 +30,14 @@ export class AuthController {
     res.status(result.statusCode).json({ message: result.value });
   }
 
-  register(req: Request, res: Response, next: NextFunction): void {
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     const body = req.body;
 
-    const result = this.serviceRegister.register(body);
+    const result = await this.serviceRegister.register(body);
 
     if (!result.success) {
       res.status(result.statusCode).json({ error: result.error });

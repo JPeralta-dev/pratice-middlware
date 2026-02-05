@@ -7,10 +7,10 @@ export class ControllerTaks {
     this.findByCreated = this.findByCreated.bind(this);
   }
 
-  save(req: Request, res: Response, next: NextFunction): void {
+  async save(req: Request, res: Response, next: NextFunction): Promise<void> {
     const body = req.body;
 
-    const result = this.service.save(body);
+    const result = await this.service.save(body);
 
     if (!result.success) {
       res.status(result.statusCode).json({ error: result.error });
@@ -19,10 +19,14 @@ export class ControllerTaks {
 
     res.status(result.statusCode).json({ message: result.value });
   }
-  findByCreated(req: Request, res: Response, next: NextFunction): void {
+  async findByCreated(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     const body = req.params.id;
 
-    const result = this.service.findByCreated(body);
+    const result = await this.service.findByCreated(body);
 
     if (!result.success) {
       res.status(result.statusCode).json({ error: result.error });

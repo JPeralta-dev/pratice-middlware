@@ -8,7 +8,7 @@ import {
   FailureProcess,
   SuccessProcess,
 } from "../../../../utils/result/result";
-import { ICrudReposity } from "../../../../interfaces/Repository/repository";
+import { ICrudReposity } from "../../../../interfaces/repository/repository";
 
 import path from "path";
 import { RepositoryUser } from "../../repository/user";
@@ -24,15 +24,15 @@ export class ServiceAuthLogin {
     this.classUtilsFiles = new RepositoryUser(this.path); // MALA PRACTICA ❌ lo se tengo flojera
   }
 
-  login({
+  async login({
     email,
     password,
   }: {
     email: string;
     password: string;
-  }): IFailureProcess<any> | ISuccessProcess<any> {
+  }): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
     try {
-      const result = this.classUtilsFiles.findById(email);
+      const result = await this.classUtilsFiles.findById(email);
       console.log(result);
 
       if (!result || result.getUsername() === "")

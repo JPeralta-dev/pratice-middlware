@@ -1,5 +1,5 @@
 import { pathData } from "../../../../config/route/route";
-import { ICrudReposity } from "../../../../interfaces/Repository/repository";
+import { ICrudReposity } from "../../../../interfaces/repository/repository";
 import {
   IFailureProcess,
   ISuccessProcess,
@@ -22,15 +22,15 @@ export class ServiceAuthRegister {
     this.classUtilsFiles = new RepositoryUser(this.path);
   }
 
-  register({
+  async register({
     email,
     password,
   }: {
     email: string;
     password: string;
-  }): IFailureProcess<any> | ISuccessProcess<any> {
+  }): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
     try {
-      const resultFind = this.classUtilsFiles.findById(email);
+      const resultFind = await this.classUtilsFiles.findById(email);
 
       if (resultFind && resultFind.getUsername() !== "")
         return FailureProcess("User already exists", 409);

@@ -3,7 +3,6 @@ import { route } from "../../../config/route/route";
 import { instanceJwtMiddlware } from "../../../middlwares/jwt/jwt";
 import { RateMiddlware } from "../../../middlwares/rate-limiting/rate-limiting";
 import { ControllerTaks } from "../controller/controller";
-import { repositoryTaks } from "../repository/taks";
 import { ServiceTaks } from "../service/service";
 
 export const routeTaks = (prefix: string) => {

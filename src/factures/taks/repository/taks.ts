@@ -1,4 +1,4 @@
-import { ICrudReposity } from "../../../interfaces/Repository/repository";
+import { ICrudReposity } from "../../../interfaces/repository/repository";
 import { fileUtils } from "../../../utils/file/file";
 import { Taks } from "../entity/taks";
 
@@ -8,8 +8,8 @@ export class repositoryTaks extends fileUtils implements ICrudReposity<Taks> {
     super(pathTheFile);
     this.utilsFiles = new fileUtils(this.pathTheFile);
   }
-  save(data: Taks): void {
-    this.utilsFiles.writeFile(data);
+  async save(data: Taks): Promise<void> {
+    await this.utilsFiles.writeFile(data);
   }
 
   delete(id: string): any {
@@ -19,8 +19,8 @@ export class repositoryTaks extends fileUtils implements ICrudReposity<Taks> {
     return undefined;
   }
 
-  findById(id: string): any {
-    const vector = this.utilsFiles.readFile();
+  async findById(id: string): Promise<any> {
+    const vector = await this.utilsFiles.readFile();
 
     const result = vector.find((value) => value.id === id);
 
@@ -36,8 +36,8 @@ export class repositoryTaks extends fileUtils implements ICrudReposity<Taks> {
     return vector;
   }
 
-  findByCreated(id: string): any {
-    const vector = this.utilsFiles.readFile();
+  async findByCreated(id: string): Promise<any> {
+    const vector = await this.utilsFiles.readFile();
 
     const result = vector.filter((value) => value.createdBy === id);
 
