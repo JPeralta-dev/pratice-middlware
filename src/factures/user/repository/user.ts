@@ -3,14 +3,10 @@ import { FileServices } from "../../../utils/file/file";
 
 import { typeUser } from "../interface/user";
 
-export class RepositoryUser
-  extends FileServices<typeUser>
-  implements ICrudReposity<typeUser>
-{
+export class RepositoryUser implements ICrudReposity<typeUser> {
   private readonly utilsFiles: FileServices<typeUser>;
   constructor(public readonly pathTheFile: string) {
-    super(pathTheFile);
-    this.utilsFiles = new FileServices(this.pathTheFile);
+    this.utilsFiles = new FileServices<typeUser>(this.pathTheFile);
   }
 
   async save(data: typeUser): Promise<void> {
@@ -18,10 +14,10 @@ export class RepositoryUser
   }
 
   delete(id: string): typeUser {
-    return { username: "", password: "" };
+    throw new Error("Not implemented");
   }
   update(data: typeUser): typeUser {
-    return { username: "", password: "" };
+    throw new Error("Not implemented");
   }
 
   async findById(id: string): Promise<typeUser | undefined> {
@@ -38,6 +34,6 @@ export class RepositoryUser
   }
 
   async find(): Promise<typeUser[]> {
-    return [{ username: "", password: "" }];
+    throw new Error("Not implemented");
   }
 }
