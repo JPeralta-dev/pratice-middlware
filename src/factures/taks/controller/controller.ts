@@ -8,31 +8,39 @@ export class ControllerTaks {
   }
 
   async save(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const body = req.body;
+    const requestData = req.body;
 
-    const result = await this.service.save(body);
+    const operationResult = await this.service.save(requestData);
 
-    if (!result.success) {
-      res.status(result.statusCode).json({ error: result.error });
+    if (!operationResult.success) {
+      res
+        .status(operationResult.statusCode)
+        .json({ error: operationResult.error });
       return;
     }
 
-    res.status(result.statusCode).json({ message: result.value });
+    res
+      .status(operationResult.statusCode)
+      .json({ message: operationResult.value });
   }
   async findByCreated(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const body = req.params.id;
+    const requestData = req.params.id;
 
-    const result = await this.service.findByCreated(body);
+    const operationResult = await this.service.findByCreated(requestData);
 
-    if (!result.success) {
-      res.status(result.statusCode).json({ error: result.error });
+    if (!operationResult.success) {
+      res
+        .status(operationResult.statusCode)
+        .json({ error: operationResult.error });
       return;
     }
 
-    res.status(result.statusCode).json({ message: result.value });
+    res
+      .status(operationResult.statusCode)
+      .json({ message: operationResult.value });
   }
 }

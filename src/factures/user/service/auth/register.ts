@@ -12,14 +12,15 @@ import {
 import { RepositoryUser } from "../../repository/user";
 import path from "path";
 import bcryptjs from "bcryptjs";
-import { User } from "../../entity/User";
+
+import { typeUser } from "../../interface/user";
 
 export class ServiceAuthRegister {
   private readonly path: string;
-  private readonly classUtilsFiles: ICrudReposity<User>;
+  private readonly repository: ICrudReposity<typeUser>;
   constructor() {
     this.path = path.join(process.cwd(), pathData.USERS, "/user.json");
-    this.classUtilsFiles = new RepositoryUser(this.path);
+    this.repository = new RepositoryUser(this.path);
   }
 
   async register({
@@ -30,16 +31,15 @@ export class ServiceAuthRegister {
     password: string;
   }): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
     try {
-      const resultFind = await this.classUtilsFiles.findById(email);
+      const existingUser = await this.repository.findById(email);
 
-      if (resultFind && resultFind.getUsername() !== "")
+      if (existingUser && existingUser.username !== "")
         return FailureProcess("User already exists", 409);
 
-      const saltScript = bcryptjs.genSaltSync(10);
-      const newPassword = bcryptjs.hashSync(password, saltScript);
+      const satl = bcryptjs.genSaltSync(10);
+      const hashedPassword = bcryptjs.hashSync(password, satl);
 
-      const user = new User(email, newPassword);
-      this.classUtilsFiles.save(user);
+      this.repository.save({ username: email, password: hashedPassword });
 
       return SuccessProcess(
         {

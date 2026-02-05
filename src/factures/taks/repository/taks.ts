@@ -1,28 +1,48 @@
 import { ICrudReposity } from "../../../interfaces/repository/repository";
-import { fileUtils } from "../../../utils/file/file";
-import { Taks } from "../entity/taks";
+import { FileServices } from "../../../utils/file/file";
 
-export class repositoryTaks extends fileUtils implements ICrudReposity<Taks> {
-  private readonly utilsFiles: fileUtils;
+import { typeTask } from "../types/task";
+
+export class repositoryTaks
+  extends FileServices<typeTask>
+  implements ICrudReposity<typeTask>
+{
+  private readonly utilsFiles: FileServices<typeTask>;
   constructor(public readonly pathTheFile: string) {
     super(pathTheFile);
-    this.utilsFiles = new fileUtils(this.pathTheFile);
+    this.utilsFiles = new FileServices(this.pathTheFile);
   }
-  async save(data: Taks): Promise<void> {
+  async save(data: typeTask): Promise<void> {
     await this.utilsFiles.writeFile(data);
   }
 
-  delete(id: string): any {
-    return undefined;
+  delete(id: string): typeTask {
+    return {
+      title: "",
+      description: "",
+      dueDate: "",
+      status: false,
+      createdBy: "",
+      assignedTo: 0,
+      id: "",
+    };
   }
-  update(data: Taks): any {
-    return undefined;
+  update(data: typeTask): typeTask {
+    return {
+      title: "",
+      description: "",
+      dueDate: "",
+      status: false,
+      createdBy: "",
+      assignedTo: 0,
+      id: "",
+    };
   }
 
-  async findById(id: string): Promise<any> {
-    const vector = await this.utilsFiles.readFile();
+  async findById(id: string): Promise<typeTask | undefined> {
+    const taks = await this.utilsFiles.readFile();
 
-    const result = vector.find((value) => value.id === id);
+    const result = taks.find((value) => value.id === id);
 
     if (!result) {
       return undefined;
@@ -31,12 +51,12 @@ export class repositoryTaks extends fileUtils implements ICrudReposity<Taks> {
     return result;
   }
 
-  find(): any {
-    const vector = this.utilsFiles.readFile();
+  async find(): Promise<typeTask[]> {
+    const vector = await this.utilsFiles.readFile();
     return vector;
   }
 
-  async findByCreated(id: string): Promise<any> {
+  async findByCreated(id: string): Promise<typeTask[]> {
     const vector = await this.utilsFiles.readFile();
 
     const result = vector.filter((value) => value.createdBy === id);

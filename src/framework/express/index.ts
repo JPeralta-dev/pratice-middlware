@@ -62,7 +62,7 @@ process.on("SIGINT", async () => {
 // bueno tener un evento que pueda desconectar el todo antes de caer ✔
 
 /**
- * Por el momento lo que noto es mucho ANY -> pescueso ya voy hacer eso
+ * Por el momento lo que noto es mucho ANY -> : Medio medio
  * también que no estas usando un lintter ni formateador de código : por realizar
  * falta manejo de errores centralizado : Por aprender porque no se, hacerlo correctamente
  * falta validaciones de datos de entrada : me dio flojera esto JAJSDJAJSDJASJ

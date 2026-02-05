@@ -1,39 +1,43 @@
 import { ICrudReposity } from "../../../interfaces/repository/repository";
-import { fileUtils } from "../../../utils/file/file";
-import { User } from "../entity/User";
+import { FileServices } from "../../../utils/file/file";
 
-export class RepositoryUser extends fileUtils implements ICrudReposity<User> {
-  private readonly utilsFiles: fileUtils;
+import { typeUser } from "../interface/user";
+
+export class RepositoryUser
+  extends FileServices<typeUser>
+  implements ICrudReposity<typeUser>
+{
+  private readonly utilsFiles: FileServices<typeUser>;
   constructor(public readonly pathTheFile: string) {
     super(pathTheFile);
-    this.utilsFiles = new fileUtils(this.pathTheFile);
+    this.utilsFiles = new FileServices(this.pathTheFile);
   }
 
-  async save(data: User): Promise<void> {
+  async save(data: typeUser): Promise<void> {
     await this.utilsFiles.writeFile(data);
   }
 
-  delete(id: string): User {
-    return new User("", "");
+  delete(id: string): typeUser {
+    return { username: "", password: "" };
   }
-  update(data: User): User {
-    return new User("", "");
+  update(data: typeUser): typeUser {
+    return { username: "", password: "" };
   }
 
-  async findById(id: string): Promise<User> {
-    const vector = await this.utilsFiles.readFile();
-    console.log(vector);
+  async findById(id: string): Promise<typeUser | undefined> {
+    const users = await this.utilsFiles.readFile();
+    console.log(users);
 
-    const result = vector.find((value) => value.username === id);
+    const foundUser = users.find((value) => value.username === id);
 
-    if (!result) {
-      return new User("", "");
+    if (!foundUser) {
+      return undefined;
     }
 
-    return new User(result.username, result.password);
+    return foundUser;
   }
 
-  find(): [User] {
-    return [new User("", "")];
+  async find(): Promise<typeUser[]> {
+    return [{ username: "", password: "" }];
   }
 }

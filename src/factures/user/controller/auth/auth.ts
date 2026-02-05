@@ -18,16 +18,16 @@ export class AuthController {
   }
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const body = req.body;
+    const CredentialsData = req.body;
 
-    const result = await this.serviceAuth.login(body);
+    const authResult = await this.serviceAuth.login(CredentialsData);
 
-    if (!result.success) {
-      res.status(result.statusCode).json({ error: result.error });
+    if (!authResult.success) {
+      res.status(authResult.statusCode).json({ error: authResult.error });
       return;
     }
 
-    res.status(result.statusCode).json({ message: result.value });
+    res.status(authResult.statusCode).json({ message: authResult.value });
   }
 
   async register(
@@ -35,28 +35,36 @@ export class AuthController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const body = req.body;
+    const requestData = req.body;
 
-    const result = await this.serviceRegister.register(body);
+    const operationResult = await this.serviceRegister.register(requestData);
 
-    if (!result.success) {
-      res.status(result.statusCode).json({ error: result.error });
+    if (!operationResult.success) {
+      res
+        .status(operationResult.statusCode)
+        .json({ error: operationResult.error });
       return;
     }
 
-    res.status(result.statusCode).json({ message: result.value });
+    res
+      .status(operationResult.statusCode)
+      .json({ message: operationResult.value });
   }
 
   refreshToken(req: Request, res: Response, next: NextFunction): void {
-    const body = req.body.token;
+    const requestData = req.body.token;
 
-    const result = this.serviceRefresh.verifyAccesToken(body);
+    const operationResult = this.serviceRefresh.verifyAccesToken(requestData);
 
-    if (!result.success) {
-      res.status(result.statusCode).json({ error: result.error });
+    if (!operationResult.success) {
+      res
+        .status(operationResult.statusCode)
+        .json({ error: operationResult.error });
       return;
     }
 
-    res.status(result.statusCode).json({ message: result.value });
+    res
+      .status(operationResult.statusCode)
+      .json({ message: operationResult.value });
   }
 }

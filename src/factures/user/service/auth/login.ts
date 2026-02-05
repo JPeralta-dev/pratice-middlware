@@ -13,12 +13,12 @@ import { ICrudReposity } from "../../../../interfaces/repository/repository";
 import path from "path";
 import { RepositoryUser } from "../../repository/user";
 
-import { User } from "../../entity/User";
 import { instanceJwtMiddlware } from "../../../../middlwares/jwt/jwt";
+import { typeUser } from "../../interface/user";
 
 export class ServiceAuthLogin {
   private readonly path: string;
-  private readonly classUtilsFiles: ICrudReposity<User>;
+  private readonly classUtilsFiles: ICrudReposity<typeUser>;
   constructor() {
     this.path = path.join(process.cwd(), pathData.USERS, "/user.json");
     this.classUtilsFiles = new RepositoryUser(this.path); // MALA PRACTICA ❌ lo se tengo flojera
@@ -30,19 +30,19 @@ export class ServiceAuthLogin {
   }: {
     email: string;
     password: string;
-  }): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
+  }): Promise<IFailureProcess<string> | ISuccessProcess<any>> {
     try {
-      const result = await this.classUtilsFiles.findById(email);
-      console.log(result);
+      const userResult = await this.classUtilsFiles.findById(email);
+      console.log(userResult);
 
-      if (!result || result.getUsername() === "")
+      if (!userResult || userResult.username === "")
         return FailureProcess("User Not Found", 404);
 
-      const comparePassword = bcryptjs.compareSync(
+      const isPasswordValid = bcryptjs.compareSync(
         password, // -> esta viene de la request
-        result.getPassword(), // -> la guardada en la base de datos
+        userResult.password, // -> la guardada en la base de datos
       );
-      if (!comparePassword) {
+      if (!isPasswordValid) {
         return FailureProcess(
           "Password or username incorrect, please try again",
           401,
@@ -65,7 +65,7 @@ export class ServiceAuthLogin {
           message: "Login successful",
           data: {
             user: {
-              username: result.getUsername(),
+              username: userResult.username,
             },
             tokens: {
               accessToken: {
