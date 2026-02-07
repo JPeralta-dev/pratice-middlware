@@ -6,6 +6,7 @@ import Jwt, {
   JwtPayload,
 } from "jsonwebtoken";
 import { FailureProcess } from "../../utils/result/result";
+import { env } from "../../config/env/env";
 
 config();
 
@@ -14,7 +15,7 @@ export class JwtMiddlware {
   private readonly secretKey!: string | any;
 
   private constructor() {
-    this.secretKey = process.env.SECRET_KEY;
+    this.secretKey = env.PASSWORD_REDIS;
     this.verifyToken = this.verifyToken.bind(this);
     this.verifyTokenRefresh = this.verifyTokenRefresh.bind(this);
   }
