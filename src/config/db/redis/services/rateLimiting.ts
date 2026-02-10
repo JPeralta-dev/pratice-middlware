@@ -20,12 +20,26 @@ export class rateLimingRedis {
       this.redisClient = await instanceRedis.getClient();
     }
 
-    const key = GenerateKeyRedis.rateLimitingByUser(user);
-    const contador = await this.redisClient.incr(key);
+    const luaScript = `
+    local current = redis.call('INCR', KEYS[1])
+    if current == 1 then
+      redis.call('EXPIRE', KEY[1],ARGV[1])
+    end
+    return current
+    `;
 
-    if (contador === 1) {
-      await this.redisClient.expire(key, windowsSecond);
-    }
+    const key = GenerateKeyRedis.rateLimitingByUser(user); // genera la clave
+    // const contador = await this.redisClient.incr(key);
+
+    // if (contador === 1) {
+    //   await this.redisClient.expire(key, windowsSecond);
+    // }
+
+    const contador = (await this.redisClient.eval(luaScript, {
+      keys: [key],
+      arguments: [windowsSecond.toString()],
+    })) as number;
+
     const ttl = await this.redisClient.ttl(key);
     const resetAt = Math.floor(Date.now() / 1000) + ttl;
     if (contador > limit) {
