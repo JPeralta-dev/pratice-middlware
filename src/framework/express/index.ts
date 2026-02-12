@@ -6,6 +6,7 @@ import { routeUser } from "../../factures/user/route/user/user";
 import { JwtMiddlware } from "../../middlwares/jwt/jwt";
 import { routeTaks } from "../../factures/taks/route/route";
 import { instanceRedis } from "../../config/db/redis/redis";
+import { ErrorMiddlware } from "../../middlwares/error-handler/error";
 
 const app = express();
 
@@ -37,6 +38,10 @@ app.get("/health", async (req: Request, res: Response) => {
     },
   });
 });
+app.use(ErrorMiddlware);
+/**
+ * Mira cosa clave de express el ordne de registro de los middleware importa mucho y deben ir luego de que cargas las rutas
+ */
 
 async function Main() {
   try {

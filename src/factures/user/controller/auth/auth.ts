@@ -23,8 +23,7 @@ export class AuthController {
     const authResult = await this.serviceAuth.login(CredentialsData);
 
     if (!authResult.success) {
-      res.status(authResult.statusCode).json({ error: authResult.error });
-      return;
+      return next(authResult.error);
     }
 
     res.status(authResult.statusCode).json({ message: authResult.value });
@@ -40,10 +39,7 @@ export class AuthController {
     const operationResult = await this.serviceRegister.register(requestData);
 
     if (!operationResult.success) {
-      res
-        .status(operationResult.statusCode)
-        .json({ error: operationResult.error });
-      return;
+      return next(operationResult.error);
     }
 
     res
@@ -57,12 +53,8 @@ export class AuthController {
     const operationResult = this.serviceRefresh.verifyAccesToken(requestData);
 
     if (!operationResult.success) {
-      res
-        .status(operationResult.statusCode)
-        .json({ error: operationResult.error });
-      return;
+      return next(operationResult.error);
     }
-
     res
       .status(operationResult.statusCode)
       .json({ message: operationResult.value });

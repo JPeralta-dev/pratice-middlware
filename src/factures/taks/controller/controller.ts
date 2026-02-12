@@ -13,10 +13,7 @@ export class ControllerTaks {
     const operationResult = await this.service.save(requestData);
 
     if (!operationResult.success) {
-      res
-        .status(operationResult.statusCode)
-        .json({ error: operationResult.error });
-      return;
+      return next(operationResult.error);
     }
 
     res
@@ -33,10 +30,7 @@ export class ControllerTaks {
     const operationResult = await this.service.findByCreated(requestData);
 
     if (!operationResult.success) {
-      res
-        .status(operationResult.statusCode)
-        .json({ error: operationResult.error });
-      return;
+      return next(operationResult.error);
     }
 
     res

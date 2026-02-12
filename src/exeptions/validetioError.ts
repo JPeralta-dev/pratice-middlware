@@ -8,6 +8,12 @@ export class ValidationError extends AppError {
 
 export class NotFoundError extends AppError {
   constructor(message: string) {
-    super(422, "NOT_FOUND_ERROR", message);
+    super(404, "NOT_FOUND_ERROR", message);
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message: string) {
+    super(409, "CONFLICT_ERROR", message);
   }
 }

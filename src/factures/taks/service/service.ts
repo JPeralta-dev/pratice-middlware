@@ -6,6 +6,11 @@ import {
   ISuccessProcess,
 } from "../../../interfaces/resutl/result";
 import { FailureProcess, SuccessProcess } from "../../../utils/result/result";
+import { AppError } from "../../../exeptions/appError";
+import {
+  ConflictError,
+  NotFoundError,
+} from "../../../exeptions/validetioError";
 export class ServiceTaks {
   private readonly paths: string;
   private readonly classUtilsFiles: repositoryTaks;
@@ -16,31 +21,37 @@ export class ServiceTaks {
 
   async save(
     object: any,
-  ): Promise<IFailureProcess<string> | ISuccessProcess<string>> {
+  ): Promise<IFailureProcess<AppError> | ISuccessProcess<string>> {
     try {
       const findTaks = await this.classUtilsFiles.findById(object.id);
-      if (findTaks) return FailureProcess("ya esta tarea tiene ese id", 404);
+      if (findTaks)
+        return FailureProcess(new ConflictError("Taks already exists"), 404);
 
       await this.classUtilsFiles.save(object);
       return SuccessProcess("saved successfully", 200);
     } catch (error) {
       console.log(error);
 
-      return FailureProcess("Error internal server", 500);
+      return FailureProcess(
+        new AppError(500, "ERROR_INTERNAL", "Error internal server"),
+        500,
+      );
     }
   }
   async findByCreated(
     id: string,
-  ): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
+  ): Promise<IFailureProcess<AppError> | ISuccessProcess<any>> {
     try {
       const resultOfFind = await this.classUtilsFiles.findByCreated(id);
-      if (!resultOfFind) return FailureProcess("No tienes tareas aun", 404);
+      if (!resultOfFind)
+        return FailureProcess(new NotFoundError("Not Found taks"), 404);
 
       return SuccessProcess(resultOfFind, 200);
     } catch (error) {
-      console.log(error);
-
-      return FailureProcess("Error internal server", 500);
+      return FailureProcess(
+        new AppError(500, "ERROR_INTERNAL", "Error internal server"),
+        500,
+      );
     }
   }
   // find(): IFailureProcess<any> | ISuccessProcess<any> {

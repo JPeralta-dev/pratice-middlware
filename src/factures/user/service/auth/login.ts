@@ -15,6 +15,9 @@ import { RepositoryUser } from "../../repository/user";
 
 import { instanceJwtMiddlware } from "../../../../middlwares/jwt/jwt";
 import { typeUser } from "../../interface/user";
+import { NotFoundError } from "../../../../exeptions/validetioError";
+import { AppError } from "../../../../exeptions/appError";
+import { AuthError } from "../../../../exeptions/authError";
 
 export class ServiceAuthLogin {
   private readonly path: string;
@@ -30,23 +33,20 @@ export class ServiceAuthLogin {
   }: {
     email: string;
     password: string;
-  }): Promise<IFailureProcess<string> | ISuccessProcess<any>> {
+  }): Promise<IFailureProcess<AppError> | ISuccessProcess<any>> {
     try {
       const userResult = await this.classUtilsFiles.findById(email);
       console.log(userResult);
 
       if (!userResult || userResult.username === "")
-        return FailureProcess("User Not Found", 404);
+        return FailureProcess(new NotFoundError("User Not Found"), 404);
 
       const isPasswordValid = bcryptjs.compareSync(
         password, // -> esta viene de la request
         userResult.password, // -> la guardada en la base de datos
       );
       if (!isPasswordValid) {
-        return FailureProcess(
-          "Password or username incorrect, please try again",
-          401,
-        );
+        return FailureProcess(new AuthError(), 401);
       }
 
       const tokenExpire = instanceJwtMiddlware.createToken({
@@ -83,7 +83,10 @@ export class ServiceAuthLogin {
         200,
       );
     } catch (error) {
-      return FailureProcess("Error internal server", 500);
+      return FailureProcess(
+        new AppError(500, "ERROR_INTERNAL", "Error internal server"),
+        500,
+      );
     }
   }
 }

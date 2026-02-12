@@ -8,9 +8,12 @@ import {
   FailureProcess,
   SuccessProcess,
 } from "./../../../../utils/result/result";
+import { AppError } from "../../../../exeptions/appError";
 
 export class serviceRefreshToken {
-  verifyAccesToken(token: any): IFailureProcess<any> | ISuccessProcess<any> {
+  verifyAccesToken(
+    token: any,
+  ): IFailureProcess<AppError> | ISuccessProcess<any> {
     try {
       const payload = JwtMiddlware.getIntance().verifyTokenRefresh(token);
 
@@ -37,9 +40,10 @@ export class serviceRefreshToken {
         200,
       );
     } catch (error) {
-      console.log(error);
-
-      return FailureProcess("Error internal server", 500);
+      return FailureProcess(
+        new AppError(500, "ERROR_INTERNAL", "Error internal server"),
+        500,
+      );
     }
   }
 }

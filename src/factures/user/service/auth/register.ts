@@ -14,6 +14,8 @@ import path from "path";
 import bcryptjs from "bcryptjs";
 
 import { typeUser } from "../../interface/user";
+import { AppError } from "../../../../exeptions/appError";
+import { ConflictError } from "../../../../exeptions/validetioError";
 
 export class ServiceAuthRegister {
   private readonly path: string;
@@ -29,12 +31,12 @@ export class ServiceAuthRegister {
   }: {
     email: string;
     password: string;
-  }): Promise<IFailureProcess<any> | ISuccessProcess<any>> {
+  }): Promise<IFailureProcess<AppError> | ISuccessProcess<any>> {
     try {
       const existingUser = await this.repository.findById(email);
 
       if (existingUser && existingUser.username !== "")
-        return FailureProcess("User already exists", 409);
+        return FailureProcess(new ConflictError("User already exists"), 409);
 
       const satl = bcryptjs.genSaltSync(10);
       const hashedPassword = bcryptjs.hashSync(password, satl);
@@ -54,7 +56,10 @@ export class ServiceAuthRegister {
         200,
       );
     } catch (error) {
-      return FailureProcess("Error internal server", 500);
+      return FailureProcess(
+        new AppError(500, "ERROR_INTERNAL", "Error internal server"),
+        500,
+      );
     }
   }
 }
