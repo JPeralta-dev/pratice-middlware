@@ -22,7 +22,6 @@ export class RepositoryUser implements ICrudReposity<typeUser> {
 
   async findById(id: string): Promise<typeUser | undefined> {
     const users = await this.utilsFiles.readFile();
-    console.log(users);
 
     const foundUser = users.find((value) => value.username === id);
 

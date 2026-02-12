@@ -59,7 +59,11 @@ export class rateLimingRedis {
     };
   }
 
-  async rateControllerByIp(ip: string, limit = 3, windowsSecond: 60) {
+  async rateControllerByIp(
+    ip: string,
+    limit = 3,
+    windowsSecond: 60,
+  ): Promise<RedisHeadersInterface> {
     if (!this.redisClient) {
       this.redisClient = await instanceRedis.getClient();
     }

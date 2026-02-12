@@ -5,6 +5,7 @@ import { AuthController } from "../../controller/auth/auth";
 import { ServiceAuthRegister } from "../../service/auth/register";
 
 import { serviceRefreshToken } from "../../service/auth/refresh";
+import { RateMiddlware } from "../../../../middlwares/rate-limiting/rate-limiting";
 
 export const routeAuth = (prefix: string): Router => {
   const service = new ServiceAuthLogin();
@@ -16,11 +17,23 @@ export const routeAuth = (prefix: string): Router => {
     serviceRefresh,
   );
 
-  route.post(`${prefix}/login`, controllerAuthLogin.login);
+  route.post(
+    `${prefix}/login`,
+    RateMiddlware.rateLimitingByIp,
+    controllerAuthLogin.login,
+  );
 
-  route.post(`${prefix}/register`, controllerAuthLogin.register);
+  route.post(
+    `${prefix}/register`,
+    RateMiddlware.rateLimitingByIp,
+    controllerAuthLogin.register,
+  );
 
-  route.post(`${prefix}/refresh`, controllerAuthLogin.refreshToken);
+  route.post(
+    `${prefix}/refresh`,
+    RateMiddlware.rateLimitingByIp,
+    controllerAuthLogin.refreshToken,
+  );
 
   return route;
 };

@@ -3,7 +3,6 @@ import morgan from "morgan";
 import { routeBase } from "../../config/route/route";
 import { routeAuth } from "../../factures/user/route/auth/auth";
 import { routeUser } from "../../factures/user/route/user/user";
-import { JwtMiddlware } from "../../middlwares/jwt/jwt";
 import { routeTaks } from "../../factures/taks/route/route";
 import { instanceRedis } from "../../config/db/redis/redis";
 import { ErrorMiddlware } from "../../middlwares/error-handler/error";
