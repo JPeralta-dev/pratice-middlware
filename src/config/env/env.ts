@@ -23,7 +23,6 @@ try {
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.error("Se produjo un error al cargar las envs", Date().toString());
-    console.error(error);
   }
   process.exit(1);
 }

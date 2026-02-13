@@ -6,6 +6,8 @@ import { ServiceAuthRegister } from "../../service/auth/register";
 
 import { serviceRefreshToken } from "../../service/auth/refresh";
 import { RateMiddlware } from "../../../../middlwares/rate-limiting/rate-limiting";
+import { validateDto } from "../../../../middlwares/validate/validate";
+import { LoginDto, RegisterDto } from "../../../../dtos/user/user.input";
 
 export const routeAuth = (prefix: string): Router => {
   const service = new ServiceAuthLogin();
@@ -19,12 +21,14 @@ export const routeAuth = (prefix: string): Router => {
 
   route.post(
     `${prefix}/login`,
+    validateDto(LoginDto),
     RateMiddlware.rateLimitingByIp,
     controllerAuthLogin.login,
   );
 
   route.post(
     `${prefix}/register`,
+    validateDto(RegisterDto),
     RateMiddlware.rateLimitingByIp,
     controllerAuthLogin.register,
   );
