@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { instanceRateLimiting } from "../../config/db/redis/services/rateLimiting";
-import { UnauthorizedError } from "../../exeptions/authError";
 
 export class RateLimitingMiddlware {
   private static instace: RateLimitingMiddlware;
@@ -15,7 +14,14 @@ export class RateLimitingMiddlware {
       const user = (req as any).user?.username;
 
       if (!user) {
-        return next(new UnauthorizedError());
+        res.status(401).json({
+          success: false,
+          error: {
+            code: "UNAUTHORIZED",
+            message: "User not authenticated",
+          },
+        });
+        return;
       }
 
       const isAlwod = await instanceRateLimiting.rateControllerByUser(user);
@@ -26,8 +32,17 @@ export class RateLimitingMiddlware {
         "X-RateLimit-Reset": isAlwod.resetAt.toString(),
       });
 
-      if (!isAlwod) {
-        return next(new RateLimitingMiddlware());
+      console.log(isAlwod);
+
+      if (!isAlwod.allowed) {
+        res.status(429).json({
+          success: false,
+          error: {
+            code: "RATE_LIMIT_EXCEEDED",
+            message: "Too many requests. Please try again later",
+          },
+        });
+        return;
       }
 
       next();
@@ -44,22 +59,35 @@ export class RateLimitingMiddlware {
   ) {
     try {
       const ip = req.ip;
-      console.log(ip);
 
       if (!ip) {
-        return next(new UnauthorizedError());
+        res.status(401).json({
+          success: false,
+          error: {
+            code: "UNAUTHORIZED",
+            message: "User not authenticated",
+          },
+        });
+        return;
       }
 
-      const isAlwod = await instanceRateLimiting.rateControllerByIp(ip, 3, 60);
-      console.log(isAlwod);
+      const isAlwod = await instanceRateLimiting.rateControllerByIp(ip);
 
       res.set({
         "X-RateLimit-Limit": isAlwod.limit.toString(),
         "X-RateLimit-Remaining": isAlwod.remaining.toString(),
         "X-RateLimit-Reset": isAlwod.resetAt.toString(),
       });
-      if (!isAlwod) {
-        return next(new RateLimitingMiddlware());
+
+      if (!isAlwod.allowed) {
+        res.status(429).json({
+          success: false,
+          error: {
+            code: "RATE_LIMIT_EXCEEDED",
+            message: "Too many requests. Please try again later",
+          },
+        });
+        return;
       }
 
       next();

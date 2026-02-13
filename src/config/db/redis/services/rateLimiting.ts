@@ -12,8 +12,8 @@ export class rateLimingRedis {
 
   async rateControllerByUser(
     user: string,
-    limit = 5,
-    windowsSecond = 30,
+    limit: number = 5,
+    windowsSecond: number = 30,
   ): Promise<RedisHeadersInterface> {
     // Espera a que el cliente esté conectado
     if (!this.redisClient) {
@@ -23,17 +23,11 @@ export class rateLimingRedis {
     const luaScript = `
     local current = redis.call('INCR', KEYS[1])
     if current == 1 then
-      redis.call('EXPIRE', KEY[1],ARGV[1])
+    redis.call('EXPIRE', KEY[1],ARGV[1])
     end
     return current
     `;
-
     const key = GenerateKeyRedis.rateLimitingByUser(user); // genera la clave
-    // const contador = await this.redisClient.incr(key);
-
-    // if (contador === 1) {
-    //   await this.redisClient.expire(key, windowsSecond);
-    // }
 
     const contador = (await this.redisClient.eval(luaScript, {
       keys: [key],
@@ -42,6 +36,7 @@ export class rateLimingRedis {
 
     const ttl = await this.redisClient.ttl(key);
     const resetAt = Math.floor(Date.now() / 1000) + ttl;
+
     if (contador > limit) {
       return {
         allowed: false,
@@ -51,6 +46,7 @@ export class rateLimingRedis {
         retryAfter: ttl,
       };
     }
+
     return {
       allowed: true,
       limit,
@@ -61,21 +57,32 @@ export class rateLimingRedis {
 
   async rateControllerByIp(
     ip: string,
-    limit = 3,
-    windowsSecond: 60,
+    limit: number = 5,
+    windowsSecond: number = 20,
   ): Promise<RedisHeadersInterface> {
     if (!this.redisClient) {
       this.redisClient = await instanceRedis.getClient();
     }
 
+    const luaScript = `local current = redis.call('INCR', KEYS[1])
+    if current == 1 then
+    redis.call('EXPIRE', KEY[1],ARGV[1])
+    end
+    return current`;
+
     const key = GenerateKeyRedis.rateLimitingByIp(ip);
-    const contador = await this.redisClient.incr(key);
+    const contador = (await this.redisClient.eval(luaScript, {
+      keys: [key],
+      arguments: [windowsSecond.toString()],
+    })) as number;
 
     const ttl = await this.redisClient.ttl(key);
+
     const resetAt = Math.floor(Date.now() / 1000) + ttl;
 
     if (contador === 1) await this.redisClient.expire(key, windowsSecond);
-    if (limit > contador) {
+
+    if (contador > limit) {
       return {
         allowed: false,
         limit,
