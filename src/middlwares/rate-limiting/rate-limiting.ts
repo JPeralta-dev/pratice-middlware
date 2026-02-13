@@ -78,6 +78,7 @@ export class RateLimitingMiddlware {
         "X-RateLimit-Remaining": isAlwod.remaining.toString(),
         "X-RateLimit-Reset": isAlwod.resetAt.toString(),
       });
+      console.log(isAlwod);
 
       if (!isAlwod.allowed) {
         res.status(429).json({

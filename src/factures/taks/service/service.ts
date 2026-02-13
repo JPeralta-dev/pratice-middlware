@@ -11,6 +11,8 @@ import {
   ConflictError,
   NotFoundError,
 } from "../../../exeptions/validetioError";
+import { BaseResponse } from "../../../interfaces/response/apiResponse";
+import { GetTaksResponse } from "../../../dtos/taks/taks.ouput";
 export class ServiceTaks {
   private readonly paths: string;
   private readonly classUtilsFiles: repositoryTaks;
@@ -21,14 +23,22 @@ export class ServiceTaks {
 
   async save(
     object: any,
-  ): Promise<IFailureProcess<AppError> | ISuccessProcess<string>> {
+  ): Promise<
+    IFailureProcess<AppError> | ISuccessProcess<BaseResponse<string>>
+  > {
     try {
       const findTaks = await this.classUtilsFiles.findById(object.id);
       if (findTaks)
         return FailureProcess(new ConflictError("Taks already exists"), 404);
 
       await this.classUtilsFiles.save(object);
-      return SuccessProcess("saved successfully", 200);
+      return SuccessProcess(
+        {
+          message: "Register successful",
+          timestamp: new Date().toISOString(),
+        },
+        200,
+      );
     } catch (error) {
       console.log(error);
 
@@ -40,13 +50,24 @@ export class ServiceTaks {
   }
   async findByCreated(
     id: string,
-  ): Promise<IFailureProcess<AppError> | ISuccessProcess<any>> {
+  ): Promise<
+    IFailureProcess<AppError> | ISuccessProcess<BaseResponse<GetTaksResponse>>
+  > {
     try {
       const resultOfFind = await this.classUtilsFiles.findByCreated(id);
       if (!resultOfFind)
         return FailureProcess(new NotFoundError("Not Found taks"), 404);
 
-      return SuccessProcess(resultOfFind, 200);
+      return SuccessProcess(
+        {
+          message: "Get succesgul",
+          data: {
+            taks: resultOfFind,
+          },
+          timestamp: new Date().toISOString(),
+        },
+        200,
+      );
     } catch (error) {
       return FailureProcess(
         new AppError(500, "ERROR_INTERNAL", "Error internal server"),

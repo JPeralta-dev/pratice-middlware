@@ -8,3 +8,7 @@ export interface LoginResponseDTO {
 export interface userDto {
   username: string;
 }
+
+export interface RegisterResponseDTO {
+  user: userDto;
+}

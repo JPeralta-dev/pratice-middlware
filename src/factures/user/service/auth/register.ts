@@ -16,6 +16,8 @@ import bcryptjs from "bcryptjs";
 import { typeUser, User } from "../../interface/user";
 import { AppError } from "../../../../exeptions/appError";
 import { ConflictError } from "../../../../exeptions/validetioError";
+import { BaseResponse } from "../../../../interfaces/response/apiResponse";
+import { RegisterResponseDTO } from "../../../../dtos/user/user.output";
 
 export class ServiceAuthRegister {
   private readonly path: string;
@@ -27,7 +29,10 @@ export class ServiceAuthRegister {
 
   async register(
     user: User,
-  ): Promise<IFailureProcess<AppError> | ISuccessProcess<any>> {
+  ): Promise<
+    | IFailureProcess<AppError>
+    | ISuccessProcess<BaseResponse<RegisterResponseDTO>>
+  > {
     try {
       const existingUser = await this.repository.findById(user.username);
 

@@ -32,7 +32,7 @@ export class JwtMiddlware {
 
   createTokenRefresh(dto: any): string {
     const jti = crypto.randomUUID();
-    return Jwt.sign({ dto, jti, type: "refresh" }, this.secretKey, {
+    return Jwt.sign({ dto, jti, type: "refresh" }, this.secreteRefrehKey, {
       algorithm: "HS256",
       expiresIn: "7d",
     });
@@ -126,12 +126,10 @@ export class JwtMiddlware {
           },
           401,
         );
-      const result = Jwt.verify(token, this.secretKey);
+      const result = Jwt.verify(token, this.secreteRefrehKey);
       return result;
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
-        console.log(error);
-
         return FailureProcess(
           {
             error: {
