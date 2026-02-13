@@ -18,6 +18,8 @@ import { typeUser } from "../../interface/user";
 import { NotFoundError } from "../../../../exeptions/validetioError";
 import { AppError } from "../../../../exeptions/appError";
 import { AuthError } from "../../../../exeptions/authError";
+import { LoginResponseDTO } from "../../../../dtos/user/user.output";
+import { BaseResponse } from "../../../../interfaces/response/apiResponse";
 
 export class ServiceAuthLogin {
   private readonly path: string;
@@ -33,7 +35,9 @@ export class ServiceAuthLogin {
   }: {
     email: string;
     password: string;
-  }): Promise<IFailureProcess<AppError> | ISuccessProcess<any>> {
+  }): Promise<
+    IFailureProcess<AppError> | ISuccessProcess<BaseResponse<LoginResponseDTO>>
+  > {
     try {
       const userResult = await this.classUtilsFiles.findById(email);
       console.log(userResult);

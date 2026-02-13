@@ -1,3 +1,10 @@
-export interface LoginResponseDTO {}
+import { AuthTokenDto } from "../token/token.output";
 
-export interface ResgisterResponseDTO {}
+export interface LoginResponseDTO {
+  user: userDto;
+  tokens: AuthTokenDto;
+}
+
+export interface userDto {
+  username: string;
+}

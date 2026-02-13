@@ -4,7 +4,7 @@ import z from "zod";
 export const validateDto = (schemaParse: z.ZodType) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      schemaParse.parse(req.body);
+      schemaParse.parse(req.body, { reportInput: true });
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
