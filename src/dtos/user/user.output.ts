@@ -1,8 +1,8 @@
-import { AuthTokenDto } from "../token/token.output";
+import { TokenDto } from "../token/token.output";
 
 export interface LoginResponseDTO {
   user: userDto;
-  tokens: AuthTokenDto;
+  tokens: Record<"accessToken" | "refreshToken", TokenDto>;
 }
 
 export interface userDto {

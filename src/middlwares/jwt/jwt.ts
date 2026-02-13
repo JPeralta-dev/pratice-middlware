@@ -12,10 +12,12 @@ config();
 
 export class JwtMiddlware {
   private static instance: JwtMiddlware;
-  private readonly secretKey!: string | any;
+  private readonly secretKey!: string;
+  private readonly secreteRefrehKey: string;
 
   private constructor() {
-    this.secretKey = env.PASSWORD_REDIS;
+    this.secretKey = env.SECRET_KEY;
+    this.secreteRefrehKey = env.SECRET_REFRESH_KEY;
     this.verifyToken = this.verifyToken.bind(this);
     this.verifyTokenRefresh = this.verifyTokenRefresh.bind(this);
   }

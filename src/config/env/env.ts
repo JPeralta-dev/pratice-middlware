@@ -7,6 +7,7 @@ const envSchema = z.object({
   SECRET_KEY: z.string(),
   URL_REDIS: z.string(),
   PASSWORD_REDIS: z.string(),
+  SECRET_REFRESH_KEY: z.string(),
 });
 
 let env: z.infer<typeof envSchema>;
