@@ -40,6 +40,10 @@ export class RedisClient {
       console.log("Redis listo ✔");
     });
 
+    this.client.on("reconnecting", () => {
+      console.log("Redis intentando reconectar...");
+    });
+
     this.client.on("error", (error) => {
       if (error instanceof AggregateError) {
         error.errors.forEach((err) => {
@@ -80,10 +84,14 @@ export class RedisClient {
   }
 
   async getClient() {
-    if (!this.statusRedis) {
-      await this.connectPromise;
+    try {
+      if (!this.client.isOpen) {
+        await this.connectPromise;
+      }
+      return this.client;
+    } catch (error) {
+      return null;
     }
-    return this.client;
   }
 
   async disconnect(): Promise<void> {

@@ -15,44 +15,60 @@ export class rateLimingRedis {
     limit: number = 5,
     windowsSecond: number = 30,
   ): Promise<RedisHeadersInterface> {
-    // Espera a que el cliente esté conectado
-    if (!this.redisClient) {
-      this.redisClient = await instanceRedis.getClient();
-    }
+    try {
+      // Espera a que el cliente esté conectado
+      if (!this.redisClient) {
+        return {
+          allowed: true,
+          limit,
+          remaining: limit,
+          resetAt: 0,
+        };
+      }
 
-    const luaScript = `
+      const luaScript = `
     local current = redis.call('INCR', KEYS[1])
     if current == 1 then
     redis.call('EXPIRE', KEYS[1],ARGV[1])
     end
     return current
     `;
-    const key = GenerateKeyRedis.rateLimitingByUser(user); // genera la clave
+      const key = GenerateKeyRedis.rateLimitingByUser(user); // genera la clave
 
-    const contador = (await this.redisClient.eval(luaScript, {
-      keys: [key],
-      arguments: [windowsSecond.toString()],
-    })) as number;
+      const contador = (await this.redisClient.eval(luaScript, {
+        keys: [key],
+        arguments: [windowsSecond.toString()],
+      })) as number;
 
-    const ttl = await this.redisClient.ttl(key);
-    const resetAt = Math.floor(Date.now() / 1000) + ttl;
+      const ttl = await this.redisClient.ttl(key);
+      const resetAt = Math.floor(Date.now() / 1000) + ttl;
 
-    if (contador > limit) {
+      if (contador > limit) {
+        return {
+          allowed: false,
+          limit,
+          remaining: 0,
+          resetAt,
+          retryAfter: ttl,
+        };
+      }
+
       return {
-        allowed: false,
+        allowed: true,
         limit,
-        remaining: 0,
+        remaining: limit - contador,
         resetAt,
-        retryAfter: ttl,
+      };
+    } catch (error) {
+      console.log(error);
+
+      return {
+        allowed: true,
+        limit,
+        remaining: limit,
+        resetAt: 0,
       };
     }
-
-    return {
-      allowed: true,
-      limit,
-      remaining: limit - contador,
-      resetAt,
-    };
   }
 
   async rateControllerByIp(
@@ -60,45 +76,61 @@ export class rateLimingRedis {
     limit: number = 5,
     windowsSecond: number = 20,
   ): Promise<RedisHeadersInterface> {
-    if (!this.redisClient) {
-      this.redisClient = await instanceRedis.getClient();
-    }
-    const luaScript = `
+    try {
+      if (!this.redisClient) {
+        return {
+          allowed: true,
+          limit,
+          remaining: limit,
+          resetAt: 0,
+        };
+      }
+      const luaScript = `
     local current = redis.call('INCR', KEYS[1])
     if current == 1 then
     redis.call('EXPIRE', KEYS[1],ARGV[1])
     end
     return current`;
 
-    const key = GenerateKeyRedis.rateLimitingByIp(ip);
+      const key = GenerateKeyRedis.rateLimitingByIp(ip);
 
-    const contador = (await this.redisClient.eval(luaScript, {
-      keys: [key],
-      arguments: [windowsSecond.toString()],
-    })) as number;
-    console.log(contador);
+      const contador = (await this.redisClient.eval(luaScript, {
+        keys: [key],
+        arguments: [windowsSecond.toString()],
+      })) as number;
+      console.log(contador);
 
-    const ttl = await this.redisClient.ttl(key);
-    const resetAt = Math.floor(Date.now() / 1000) + ttl;
+      const ttl = await this.redisClient.ttl(key);
+      const resetAt = Math.floor(Date.now() / 1000) + ttl;
 
-    console.log(ttl);
+      console.log(ttl);
 
-    if (contador > limit) {
+      if (contador > limit) {
+        return {
+          allowed: false,
+          limit,
+          remaining: 0,
+          resetAt,
+          retryAfter: ttl,
+        };
+      }
+
       return {
-        allowed: false,
+        allowed: true,
         limit,
-        remaining: 0,
+        remaining: limit - contador,
         resetAt,
-        retryAfter: ttl,
+      };
+    } catch (error) {
+      console.log(error);
+
+      return {
+        allowed: true,
+        limit,
+        remaining: limit,
+        resetAt: 0,
       };
     }
-
-    return {
-      allowed: true,
-      limit,
-      remaining: limit - contador,
-      resetAt,
-    };
   }
 }
 
