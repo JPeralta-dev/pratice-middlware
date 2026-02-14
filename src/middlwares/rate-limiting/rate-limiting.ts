@@ -59,8 +59,9 @@ export class RateLimitingMiddlware {
   ) {
     try {
       const ip = req.ip;
+      const ipv4 = ip?.includes(":") ? ip.split(":").pop() : ip;
 
-      if (!ip) {
+      if (!ipv4) {
         res.status(401).json({
           success: false,
           error: {
@@ -71,7 +72,7 @@ export class RateLimitingMiddlware {
         return;
       }
 
-      const isAlwod = await instanceRateLimiting.rateControllerByIp(ip);
+      const isAlwod = await instanceRateLimiting.rateControllerByIp(ipv4);
 
       res.set({
         "X-RateLimit-Limit": isAlwod.limit.toString(),

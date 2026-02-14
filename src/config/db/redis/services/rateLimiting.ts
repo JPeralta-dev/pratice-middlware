@@ -23,7 +23,7 @@ export class rateLimingRedis {
     const luaScript = `
     local current = redis.call('INCR', KEYS[1])
     if current == 1 then
-    redis.call('EXPIRE', KEY[1],ARGV[1])
+    redis.call('EXPIRE', KEYS[1],ARGV[1])
     end
     return current
     `;
@@ -66,7 +66,7 @@ export class rateLimingRedis {
     const luaScript = `
     local current = redis.call('INCR', KEYS[1])
     if current == 1 then
-    redis.call('EXPIRE', KEY[1],ARGV[1])
+    redis.call('EXPIRE', KEYS[1],ARGV[1])
     end
     return current`;
 
@@ -76,6 +76,7 @@ export class rateLimingRedis {
       keys: [key],
       arguments: [windowsSecond.toString()],
     })) as number;
+    console.log(contador);
 
     const ttl = await this.redisClient.ttl(key);
     const resetAt = Math.floor(Date.now() / 1000) + ttl;
