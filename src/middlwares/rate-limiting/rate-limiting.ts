@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { instanceRateLimiting } from "../../config/db/redis/services/rateLimiting";
+import { RedisHeadersInterface } from "../../config/db/redis/interfaces/redis";
 
 export class RateLimitingMiddlware {
   private static instace: RateLimitingMiddlware;
@@ -96,6 +97,14 @@ export class RateLimitingMiddlware {
     } catch (error) {
       next(error);
     }
+  }
+
+  public setHeaders(res: Response, headers: RedisHeadersInterface): void {
+    res.set({
+      "X-RateLimit-Limit": headers.limit.toString(),
+      "X-RateLimit-Remaining": headers.remaining.toString(),
+      "X-RateLimit-Reset": headers.resetAt.toString(),
+    });
   }
 
   public static getInstance(): RateLimitingMiddlware {
