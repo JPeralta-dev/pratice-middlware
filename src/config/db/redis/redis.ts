@@ -1,6 +1,7 @@
 import { createClient, RedisClientType } from "redis";
 import { config } from "dotenv";
 import { env } from "../../env/env";
+import { ConnectionError } from "../../../exeptions/externalError";
 
 config();
 
@@ -40,27 +41,27 @@ export class RedisClient {
     });
 
     this.client.on("error", (error) => {
-      console.log("hubo un error y es" + error);
-    });
-
-    this.client.on("SIGINT", async () => {
-      console.log("Cerrando servidor...");
-      await RedisClient.getIntance().disconnect();
+      if (error instanceof AggregateError) {
+        error.errors.forEach((err) => {
+          console.error("Redis error:", err.code);
+          this.statusRedis = false;
+        });
+      }
     });
   }
 
   async connectRedis() {
     if (!this.connectPromise) {
-      this.connectPromise = (async () => {
-        try {
-          await this.client.connect();
+      this.connectPromise = this.client
+        .connect()
+        .then(() => {
           this.statusRedis = true;
-        } catch (error) {
+        })
+        .catch((error) => {
+          this.statusRedis = false;
           this.connectPromise = null;
-          console.log("error" + error); // TODOS:MANEJO DE ERROES CORRECTO
-          throw error;
-        }
-      })();
+          throw new ConnectionError("REDIS", error.code ?? "UNKNOWN");
+        });
     }
     return this.connectPromise;
   }
