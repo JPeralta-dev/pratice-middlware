@@ -8,6 +8,18 @@ export class rateLimingRedis {
 
   constructor() {
     this.rateControllerByUser = this.rateControllerByUser.bind(this);
+    this.initializeRedisClient();
+  }
+
+  private async initializeRedisClient() {
+    try {
+      this.redisClient = await instanceRedis.getClient();
+    } catch (error) {
+      console.warn(
+        "⚠️ Redis client not available for rate limiting - Rate limiting disabled",
+      );
+      this.redisClient = null;
+    }
   }
 
   async rateControllerByUser(
@@ -18,6 +30,9 @@ export class rateLimingRedis {
     try {
       // Espera a que el cliente esté conectado
       if (!this.redisClient) {
+        console.warn(
+          `⚠️ Rate limiting bypassed for user ${user} - Redis unavailable`,
+        );
         return {
           allowed: true,
           limit,
@@ -78,6 +93,9 @@ export class rateLimingRedis {
   ): Promise<RedisHeadersInterface> {
     try {
       if (!this.redisClient) {
+        console.warn(
+          `⚠️ Rate limiting bypassed for ip ${ip} - Redis unavailable`,
+        );
         return {
           allowed: true,
           limit,

@@ -41,16 +41,16 @@ export class RedisClient {
     });
 
     this.client.on("reconnecting", () => {
-      console.log("Redis intentando reconectar...");
+      //console.log("Redis intentando reconectar...");
     });
 
     this.client.on("error", (error) => {
-      if (error instanceof AggregateError) {
-        error.errors.forEach((err) => {
-          console.error("Redis error:", err.code);
-          this.statusRedis = false;
-        });
-      }
+      // if (error instanceof AggregateError) {
+      //   error.errors.forEach((err) => {
+      //     console.error("Redis error:", err.code);
+      //     this.statusRedis = false;
+      //   });
+      // }
     });
   }
 
@@ -64,7 +64,7 @@ export class RedisClient {
         .catch((error) => {
           this.statusRedis = false;
           this.connectPromise = null;
-          throw new ConnectionError("REDIS", error.code ?? "UNKNOWN");
+          console.log(new ConnectionError("REDIS", error.code ?? "UNKNOWN"));
         });
     }
     return this.connectPromise;
@@ -101,7 +101,7 @@ export class RedisClient {
         this.statusRedis = false;
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   }
 

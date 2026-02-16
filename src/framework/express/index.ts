@@ -45,6 +45,7 @@ app.use(ErrorMiddlware);
 async function Main() {
   try {
     await instanceRedis.connectRedis();
+
     app.listen(PORT, () => {
       console.log(
         `esta encendido el server en el puerto http://localhost:${PORT}`,
