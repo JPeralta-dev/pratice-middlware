@@ -45,7 +45,13 @@ app.use(ErrorMiddlware);
 async function Main() {
   try {
     await instanceRedis.connectRedis();
-
+    const redisStatus = instanceRedis.getStatus();
+    if (redisStatus) {
+      console.log("✅ Redis connected successfully");
+    } else {
+      console.warn("⚠️ Redis not available - Rate limiting will be disabled");
+      console.warn("⚠️ Application will continue without Redis");
+    }
     app.listen(PORT, () => {
       console.log(
         `esta encendido el server en el puerto http://localhost:${PORT}`,
@@ -53,6 +59,7 @@ async function Main() {
     });
   } catch (error) {
     console.log("Hubo un error al inicar el server " + error);
+    process.exit(1);
   }
 }
 

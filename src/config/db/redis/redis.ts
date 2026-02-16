@@ -24,6 +24,11 @@ export class RedisClient {
       socket: {
         // Los socket es uyna propiedad que nos ayuda a saber como node va a conectarse y tener mejor control
         reconnectStrategy: (retries) => {
+          if (retries > 10) {
+            // si no controlamos esta propiedad con redis no nos deja avanzar
+            console.error("❌ Redis: Max reconnection attempts reached");
+            return false; // Detiene los intentos de reconexión
+          }
           // Bella esta propiedad, nos dice como y cuando node se reconecta a redis
           return Math.min(retries * 100, 3000); // funcion que dewvuelve el numero mas pequeño que 3000 pero que no se sobre pase
         },
@@ -41,7 +46,7 @@ export class RedisClient {
     });
 
     this.client.on("reconnecting", () => {
-      //console.log("Redis intentando reconectar...");
+      console.log("Redis intentando reconectar...");
     });
 
     this.client.on("error", (error) => {
@@ -85,10 +90,17 @@ export class RedisClient {
 
   async getClient() {
     try {
-      if (!this.client.isOpen) {
-        await this.connectPromise;
+      if (this.client.isOpen && this.statusRedis) {
+        return this.client;
       }
-      return this.client;
+      if (this.connectPromise) {
+        await this.connectPromise;
+
+        return this.client.isOpen ? this.client : null;
+      }
+      await this.connectRedis();
+
+      return this.client.isOpen ? this.client : null;
     } catch (error) {
       return null;
     }
@@ -96,12 +108,19 @@ export class RedisClient {
 
   async disconnect(): Promise<void> {
     try {
-      if (this.statusRedis) {
-        await this.client.close();
+      if (this.statusRedis && this.client.isOpen) {
+        await this.client.quit();
         this.statusRedis = false;
+        this.connectPromise = null;
       }
     } catch (error) {
-      console.log(error);
+      console.error("❌ Error disconnecting Redis:", error);
+      // Intenta forzar el cierre
+      try {
+        this.client.destroy();
+      } catch (e) {
+        console.error("❌ Error forcing Redis disconnect:", e);
+      }
     }
   }
 
