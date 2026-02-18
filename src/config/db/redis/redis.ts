@@ -25,7 +25,7 @@ export class RedisClient {
         // Los socket es uyna propiedad que nos ayuda a saber como node va a conectarse y tener mejor control
         reconnectStrategy: (retries) => {
           if (retries > 10) {
-            // si no controlamos esta propiedad con redis no nos deja avanzar
+            // si no controlamos esta propiedad con redis no nos deja avanzar, ya que intenta una y otra vez
             console.error("❌ Redis: Max reconnection attempts reached");
             return false; // Detiene los intentos de reconexión
           }
@@ -76,6 +76,12 @@ export class RedisClient {
   }
 
   getStatus(): boolean {
+    if (this.statusRedis) {
+      console.log("✅ Redis connected successfully");
+    } else {
+      console.warn("⚠️ Redis not available - Rate limiting will be disabled");
+      console.warn("⚠️ Application will continue without Redis");
+    }
     return this.statusRedis;
   }
 

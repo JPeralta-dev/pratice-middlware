@@ -7,7 +7,6 @@ export class rateLimingRedis {
   private redisClient: RedisClientType | null = null;
 
   constructor() {
-    this.rateControllerByUser = this.rateControllerByUser.bind(this);
     this.initializeRedisClient();
   }
 

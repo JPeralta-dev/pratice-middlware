@@ -5,8 +5,8 @@ export enum Keys {
 }
 
 export class GenerateKeyRedis {
-  static generateKeyBlacklist(jti: String) {
-    return `${Keys.BLACKLIST}:token:${jti}`;
+  static generateKeyBlacklist() {
+    return `${Keys.BLACKLIST}:token`;
   }
   static rateLimitingByIp(ip: string) {
     return `${Keys.RATE}:ip:${ip}`;
